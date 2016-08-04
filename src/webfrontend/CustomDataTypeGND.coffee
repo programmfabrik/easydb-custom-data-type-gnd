@@ -5,6 +5,8 @@ class CustomDataTypeGND extends CustomDataType
 	entityfacts_xhr = undefined
 	# suggestMenu
 	suggest_Menu = new Menu
+	# short info panel
+	entityfacts_Panel = new Pane
 	# locked gnd-URI
 	gndResultURI = ''
 	# locked gnd-Name

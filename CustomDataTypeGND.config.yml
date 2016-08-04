@@ -1,0 +1,29 @@
+plugin:
+  name: custom-data-type-gnd
+  version: 1.0
+  server:
+    api-version:
+      require: 1
+  webfrontend:
+    url: build/webfrontend/custom-data-type-gnd.js
+    l10n: build/webfrontend/l10n/
+custom_types:
+  gnd:
+    elasticsearch:
+      mapping:
+        type: l10ntext
+      value:
+        origin: json
+        key: text
+    config:
+      schema:
+        - name: add_timestamp
+          parameters:
+            value:
+              type: bool
+      mask:
+        - name: editor_style
+          parameters:
+            value:
+              type: select
+              options: ["inline", "popover"]

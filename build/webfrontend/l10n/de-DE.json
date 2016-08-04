@@ -1,0 +1,33 @@
+{
+    "de-DE": {
+	"custom.data.type.gnd.name" : "GND-Verknüpfung",
+	"custom.data.type.gnd.edit.button|icon": "edit",
+	"custom.data.type.gnd.config.option.mask.editor_style.value.inline": "Eingebettet",
+        "custom.data.type.gnd.setting.mask.editor_style": "Editor-Stil",
+        "custom.data.type.gnd.config.option.mask.editor_style.value.popover": "Popover",
+
+        "custom.data.type.gnd.modal.form.url.placeholder": "GND-Verknüpfung",
+
+        "custom.data.type.gnd.modal.form.text.label": "Text",
+
+        "custom.data.type.gnd.edit.modal.title|text": "Web-GND konfigurieren",
+
+        "custom.data.type.gnd.edit.no_valid_gnd": "Keine valide GND-Verknüpfung",
+        "custom.data.type.gnd.edit.no_gnd": "Keine GND-Verknüpfung gesetzt",
+
+	"custom.data.type.gnd.modal.form.text.type": "Suche auf Typ einschränken",
+	"custom.data.type.gnd.modal.form.text.count": "Anzahl Vorschläge",
+
+        "custom.data.type.gnd.modal.form.text.searchbar": "Suchbegriff eingeben",
+	"custom.data.type.gnd.modal.form.text.searchbar.placeholder" : " tippen ... ",
+
+	"custom.data.type.gnd.modal.form.text.result.label" : "Gewählter Eintrag",
+	"custom.data.type.gnd.modal.form.text.result.placeholder" : "noch leer",
+
+	"custom.data.type.gnd.modal.form.text.uri.label" : "Zugehörige URI",
+	"custom.data.type.gnd.modal.form.text.uri.label.placeholder" : "noch leer",
+
+	"custom.data.type.gnd.url.tooltip" : "zu **%(name)s** bei der Deutschen Nationalbibliothek springen"
+
+    }
+}
