@@ -1,0 +1,4 @@
+build-stamp-*
+build
+*~
+*.coffee.js
