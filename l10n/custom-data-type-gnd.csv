@@ -1,6 +1,7 @@
 "key","de-DE","en-US","it-IT","es-ES"
 "custom.data.type.gnd.name","GND-Verknüpfung",
 "custom.data.type.gnd.edit.button|icon","edit",
+"custom.data.type.gnd.remove.button|icon","trash",
 "custom.data.type.gnd.config.option.mask.editor_style.value.inline","Eingebettet",
 "custom.data.type.gnd.setting.mask.editor_style","Editor-Stil",
 "custom.data.type.gnd.config.option.mask.editor_style.value.popover","Popover",
@@ -17,4 +18,10 @@
 "custom.data.type.gnd.modal.form.text.result.placeholder","noch leer",
 "custom.data.type.gnd.modal.form.text.uri.label","Zugehörige URI",
 "custom.data.type.gnd.modal.form.text.uri.label.placeholder","noch leer",
-"custom.data.type.gnd.url.tooltip","zu **%(name)s** bei der Deutschen Nationalbibliothek springen"
+"custom.data.type.gnd.url.tooltip","zu **%(name)s** bei der Deutschen Nationalbibliothek springen",
+"custom.data.type.gnd.setting.schema.add_differentiatedpersons","Individualisierte Personen",
+"custom.data.type.gnd.setting.schema.add_coorporates","Körperschaften",
+"custom.data.type.gnd.setting.schema.add_geographicplaces","Geografika",
+"custom.data.type.gnd.setting.schema.add_subjects","Sachbegriffe",
+"custom.data.type.gnd.setting.mask.show_infopopup","Zeige wenn möglich erweiterte GND-Informationen. Diese werden zur Ansicht geladen, sobald die Maus über einen Eintrag in der Vorschlagsliste bewegt wird.",
+
