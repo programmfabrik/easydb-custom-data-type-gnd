@@ -17,13 +17,24 @@ custom_types:
         key: text
     config:
       schema:
-        - name: add_timestamp
+        - name: add_differentiatedpersons
+          parameters:
+            value:
+              type: bool
+        - name: add_coorporates
+          parameters:
+            value:
+              type: bool
+        - name: add_geographicplaces
+          parameters:
+            value:
+              type: bool
+        - name: add_subjects
           parameters:
             value:
               type: bool
       mask:
-        - name: editor_style
+        - name: show_infopopup
           parameters:
             value:
-              type: select
-              options: ["inline", "popover"]
+              type: bool
