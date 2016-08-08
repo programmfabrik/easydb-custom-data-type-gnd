@@ -1,3 +1,6 @@
+Session::getCustomDataTypes = ->
+	@getDefaults().server.custom_data_types or {}
+
 class CustomDataTypeGND extends CustomDataType
 
 	# the eventually running xhrs
@@ -23,8 +26,8 @@ class CustomDataTypeGND extends CustomDataType
 	getCustomDataTypeNameLocalized: ->
 		$$("custom.data.type.gnd.name")
 
-
-	#
+	#######################################################################
+	# handle editorinput
 	renderEditorInput: (data, top_level_data, opts) ->
 		# console.error @, data, top_level_data, opts, @name(), @fullName()
 		if not data[@name()]
@@ -33,25 +36,43 @@ class CustomDataTypeGND extends CustomDataType
 				    gndResultURI : ''
 				}
 			data[@name()] = cdata
+			gndResultURI = ''
+			gndResultName = ''
 		else
 			cdata = data[@name()]
 			gndResultName = cdata.gndResultName
 			gndResultURI = cdata.gndResultURI
 
-		@__renderEditorInputPopover(cdata)
+		@__renderEditorInputPopover(data, cdata)
 
 
 	#######################################################################
-	# button, which opens popover
-	__renderEditorInputPopover: (cdata) ->
+	# buttons, which open and close popover
+	__renderEditorInputPopover: (data, cdata) ->
 		@__layout = new HorizontalLayout
-			left: {}
-			right:
+			left:
 				content:
-					loca_key: "custom.data.type.gnd.edit.button"
-					onClick: (ev, btn) =>
-						@showEditPopover(btn, cdata)
-
+						loca_key: "custom.data.type.gnd.edit.button"
+						onClick: (ev, btn) =>
+							@showEditPopover(btn, cdata, data)
+			center:
+				content:
+						loca_key: "custom.data.type.gnd.remove.button"
+						onClick: (ev, btn) =>
+							# delete data
+							cdata = {
+								    gndResultName : ''
+								    gndResultURI : ''
+							}
+							data.gnd = cdata
+							gndResultURI = ''
+							gndResultName = ''
+							# trigger form change
+							Events.trigger
+								node: @__layout
+								type: "editor-changed"
+							@__updateGNDResult(cdata)
+			right: {}
 		@__updateGNDResult(cdata)
 		@__layout
 
@@ -60,11 +81,11 @@ class CustomDataTypeGND extends CustomDataType
 	# update result in Masterform
 	__updateGNDResult: (cdata) ->
 		btn = @__renderButtonByData(cdata)
-		@__layout.replace(btn, "left")
+		@__layout.replace(btn, "right")
 
 
 	#######################################################################
-	# if type = DifferentiatedPerson, then get short info about entry from entityfacts
+	# if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
 	__getInfoFromEntityFacts: (uri, tooltip) ->
 		# extract gndID from uri
 		gndID = uri
@@ -80,8 +101,6 @@ class CustomDataTypeGND extends CustomDataType
 		.done((data, status, statusText) ->
 			htmlContent = '<span style="font-weight: bold">Informationen über den Eintrag</span>'
 			htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
-
-			console.log data
 
 			##########################
 			# DifferentiatedPerson and CorporateBody
@@ -205,9 +224,12 @@ class CustomDataTypeGND extends CustomDataType
 						    auto_size: true
 						    placement: "e"
 						    content: (tooltip) ->
-							    if gnd_searchtype == "DifferentiatedPerson" or gnd_searchtype == "CorporateBody"
-								    that.__getInfoFromEntityFacts(data[3][key], tooltip)
-								    new Label(icon: "spinner", text: "lade Informationen")
+							    # if enabled in mask-config
+							    if that.getCustomMaskSettings().show_infopopup?.value
+								    # if type is ready for infopopup
+								    if gnd_searchtype == "DifferentiatedPerson" or gnd_searchtype == "CorporateBody"
+									    that.__getInfoFromEntityFacts(data[3][key], tooltip)
+									    new Label(icon: "spinner", text: "lade Informationen")
 				    menu_items.push item
 
 		    # set new items to menu
@@ -221,7 +243,6 @@ class CustomDataTypeGND extends CustomDataType
 				    # lock in save data
 				    cdata.gndResultURI = gndResultURI
 				    cdata.gndResultName = gndResultName
-
 				    # lock in form
 				    cdata_form.getFieldsByName("gndResultName")[0].storeValue(gndResultName).displayValue()
 				    # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
@@ -299,16 +320,16 @@ class CustomDataTypeGND extends CustomDataType
 
 	#######################################################################
 	# show popover and fill it with the form-elements
-	showEditPopover: (btn, cdata) ->
+	showEditPopover: (btn, cdata, data) ->
 		# set default value for count of suggestions
 		cdata.gndSelectCountOfSuggestions = 20
 		cdata_form = new Form
 			data: cdata
+			fields: @__getEditorFields()
 			onDataChanged: =>
 				@__updateGNDResult(cdata)
 				@__setEditorFieldStatus(cdata, @__layout)
 				@__updateSuggestionsMenu(cdata, cdata_form)
-			fields: @__getEditorFields()
 		.start()
 		xpane = new SimplePane
 			class: "cui-demo-pane-pane"
@@ -332,6 +353,12 @@ class CustomDataTypeGND extends CustomDataType
 				footer_left: new Button
 				    text: "Ok, Popup schließen"
 				    onClick: =>
+					    # put data to savedata
+					    data.gnd = {
+						    gndResultName : cdata.gndResultName
+						    gndResultURI : cdata.gndResultURI
+					    }
+					    # close popup
 					    @popover.destroy()
 				# "reset"-button
 				footer_right: new Button
@@ -346,29 +373,63 @@ class CustomDataTypeGND extends CustomDataType
 	#######################################################################
 	# create form
 	__getEditorFields: ->
+		# read searchtypes from datamodell-options
+		dropDownSearchOptions = []
+		# offer DifferentiatedPerson
+		if @getCustomSchemaSettings().add_differentiatedpersons?.value
+		    option = (
+				    value: 'DifferentiatedPerson'
+				    text: 'Individualisierte Personen'
+			    )
+		    dropDownSearchOptions.push option
+		# offer CorporateBody?
+		if @getCustomSchemaSettings().add_coorporates?.value
+		    option = (
+				    value: 'CorporateBody'
+				    text: 'Körperschaften'
+			    )
+		    dropDownSearchOptions.push option
+		# offer PlaceOrGeographicName?
+		if @getCustomSchemaSettings().add_geographicplaces?.value
+		    option = (
+				    value: 'PlaceOrGeographicName'
+				    text: 'Orte und Geographische Namen'
+			    )
+		    dropDownSearchOptions.push option
+		# offer add_subjects?
+		if @getCustomSchemaSettings().add_subjects?.value
+		    option = (
+				    value: 'SubjectHeading'
+				    text: 'Schlagwörter'
+			    )
+		    dropDownSearchOptions.push option
+
+		# if empty options -> offer all
+		if dropDownSearchOptions.length == 0
+		    dropDownSearchOptions = [
+			    (
+				    value: 'DifferentiatedPerson'
+				    text: 'Individualisierte Personen'
+			    )
+			    (
+				    value: 'CorporateBody'
+				    text: 'Körperschaften'
+			    )
+			    (
+				    value: 'PlaceOrGeographicName'
+				    text: 'Orte und Geographische Namen'
+			    )
+			    (
+				    value: 'SubjectHeading'
+				    text: 'Schlagwörter'
+			    )
+		    ]
 		[{
 			type: Select
 			undo_and_changed_support: false
 			form:
 			    label: $$('custom.data.type.gnd.modal.form.text.type')
-			options: [
-				(
-				    value: 'DifferentiatedPerson'
-				    text: 'Individualisierte Personen'
-				)
-				(
-				    value: 'CorporateBody'
-				    text: 'Körperschaften'
-				)
-				(
-				    value: 'PlaceOrGeographicName'
-				    text: 'Orte und Geographische Namen'
-				)
-				(
-				    value: 'SubjectHeading'
-				    text: 'Schlagwörter'
-				)
-			]
+			options: dropDownSearchOptions
 			name: 'gndSelectType'
 		}
 		{
@@ -426,7 +487,8 @@ class CustomDataTypeGND extends CustomDataType
 		}
 		]
 
-	#
+	#######################################################################
+	# renders details-output of record
 	renderDetailOutput: (data, top_level_data, opts) ->
 		@__renderButtonByData(data[@name()])
 
@@ -434,26 +496,34 @@ class CustomDataTypeGND extends CustomDataType
 	#######################################################################
 	# checks the form and returns status
 	getDataStatus: (cdata) ->
-		# check url for valididy
-		uriCheck = CUI.parseLocation(cdata.gndResultURI)
+		if cdata.gndResultURI and cdata.gndResultName
+			# check url for valididy
+			uriCheck = CUI.parseLocation(cdata.gndResultURI)
 
-		# /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
+			# /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(value);
 
-		# uri-check patch!?!? returns always a result
-		console.log(uriCheck);
+			# uri-check patch!?!? returns always a result
+			console.log(uriCheck);
 
-		nameCheck = if cdata.gndResultName then cdata.gndResultName.trim() else undefined
+			nameCheck = if cdata.gndResultName then cdata.gndResultName.trim() else undefined
 
-		if uriCheck and nameCheck
-			console.debug "getDataStatus: OK"
-			return "ok"
+			if uriCheck and nameCheck
+				console.debug "getDataStatus: OK "
+				return "ok"
 
-		if cdata.gndResultURI.trim() == '' and cdata.gndResultName.trim() == ''
+			if cdata.gndResultURI.trim() == '' and cdata.gndResultName.trim() == ''
+				console.debug "getDataStatus: empty"
+				return "empty"
+
+			console.debug "getDataStatus returns invalid"
+			return "invalid"
+		else
+			cdata = {
+				    gndResultName : ''
+				    gndResultURI : ''
+				}
 			console.debug "getDataStatus: empty"
 			return "empty"
-
-		console.debug "getDataStatus returns invalid"
-		return "invalid"
 
 
 	#######################################################################
@@ -489,7 +559,6 @@ class CustomDataTypeGND extends CustomDataType
 	# is called, when record is being saved by user
 	getSaveData: (data, save_data, opts) ->
 		cdata = data[@name()] or data._template?[@name()]
-
 		switch @getDataStatus(cdata)
 			when "invalid"
 				throw InvalidSaveDataException
@@ -499,6 +568,11 @@ class CustomDataTypeGND extends CustomDataType
 				save_data[@name()] =
 					gndResultName: cdata.gndResultName.trim()
 					gndResultURI: cdata.gndResultURI.trim()
+
+
+
+	renderCustomDataOptionsInDatamodel: (custom_settings) ->
+		@
 
 
 CustomDataType.register(CustomDataTypeGND)
