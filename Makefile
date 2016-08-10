@@ -19,6 +19,7 @@ clean:
 	rm -f src/webfrontend/*.coffee.js
 	rm -f build-stamp-l10n
 	rm -rf build/
+	rm -rf test/*.coffee.js
 
 build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
 	mkdir -p build/webfrontend/l10n
@@ -28,6 +29,10 @@ build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
 ${JS_FILE}: src/webfrontend/CustomDataTypeGND.coffee.js
 	mkdir -p build/webfrontend
 	cat $^ > $@
+
+test: ${JS_FILE} test/mock.coffee.js test/smoke.coffee.js
+	cat test/mock.coffee.js ${JS_FILE} test/smoke.coffee.js > test/tmp.coffee.js
+	node test/tmp.coffee.js
 
 %.coffee.js: %.coffee
 	coffee -b -p --compile "$^" > "$@" || ( rm -f "$@" ; false )
