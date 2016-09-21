@@ -1,0 +1,35 @@
+{
+  "name": "easydb-custom-data-type-gnd",
+  "version": "0.1.0",
+  "description": "easyDB5 custom data type for Integrated Authority File (GND)",
+  "keywords": [
+    "easydb"
+  ],
+  "license": "LGPL-3.0",
+  "author": "Tobias Helms <tobias.helms@gbv.de>",
+  "contributors": [
+    {
+      "name": "Jakob Voß",
+      "email": "jakob.voss@gbv.de"
+    },
+    {
+      "name": "Martin Rode",
+      "email": "martin.rode@programmfabrik.de"
+    }
+  ],
+  "devDependencies": {
+    "coffee-script": "^1.9.0",
+    "jasmine-node": "^1.14.1"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/programmfabrik/easydb-custom-data-type-gnd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/programmfabrik/easydb-custom-data-type-gnd/issues"
+  },
+  "homepage": "https://github.com/programmfabrik/easydb-custom-data-type-gnd#readme"
+}

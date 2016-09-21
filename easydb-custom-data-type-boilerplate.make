@@ -32,30 +32,34 @@ CULTURES_CSV_IN_CONTAINER = $(PATH_IN_CONTAINER)/l10n/cultures.csv
 L10N_FILES = l10n/$(DATA_TYPE_FILENAME).csv
 L10N_FILES_IN_CONTAINER = $(PATH_IN_CONTAINER)/l10n/$(DATA_TYPE_FILENAME).csv
 
+COFFEE_FILE = src/webfrontend/CustomDataType$(DATA_TYPE_NAME).coffee
 JS_FILE = build/webfrontend/$(DATA_TYPE_FILENAME).js
+TEST_FILES = $(wildcard test/*.test.coffee)
 
-all: ${JS_FILE} build-stamp-l10n
+all: test ${JS_FILE} build-stamp-l10n
 
 clean:
-	rm -f src/webfrontend/*.coffee.js
-	rm -f build-stamp-l10n
-	rm -rf build/
-	rm -rf test/*.coffee.js
+	@rm -f src/webfrontend/*.coffee.js
+	@rm -f build-stamp-l10n
+	@rm -rf build/
+	@rm -rf test/*.spec.coffee
 
 build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
-	mkdir -p build/webfrontend/l10n
+	@mkdir -p build/webfrontend/l10n
 	$(L10N2JSON) $(CULTURES_CSV_IN_CONTAINER) $(L10N_FILES_IN_CONTAINER) $(PATH_IN_CONTAINER)/build/webfrontend/l10n/
-	touch $@
+	@touch $@
 
-${JS_FILE}: src/webfrontend/CustomDataType$(DATA_TYPE_NAME).coffee.js
+${JS_FILE}: $(COFFEE_FILE).js
 	mkdir -p build/webfrontend
 	cat $^ > $@
 
-test: ${JS_FILE} test/mock.coffee.js test/smoke.coffee.js
-	cat test/mock.coffee.js ${JS_FILE} test/smoke.coffee.js > test/tmp.coffee.js
-	node test/tmp.coffee.js
+test: $(patsubst %.test.coffee,%.spec.coffee,$(TEST_FILES))
+	@./node_modules/.bin/jasmine-node --coffee --verbose test
 
 %.coffee.js: %.coffee
-	coffee -b -p --compile "$^" > "$@" || ( rm -f "$@" ; false )
+	@coffee -b -p --compile "$^" > "$@" && echo "$@" || ( rm -f "$@" ; false )
 
-.PHONY: clean
+%.spec.coffee: test/mock.coffee $(COFFEE_FILE) %.test.coffee
+	@cat $^ > "$@" && echo "$@"
+
+.PHONY: clean test
