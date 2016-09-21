@@ -17,22 +17,22 @@ class FormButton extends DataField
 class Icon
 
 class CUI
-    @XHR: () ->
+  @XHR: () ->
 
-    @parseLocation: () ->
-        true
+  @parseLocation: () ->
+    true
 
-    @debug: () ->
+  @debug: () ->
 
 class CustomDataType
-    @register: (datatype) -> 
+  @register: (datatype) -> 
 
-    getCustomSchemaSettings: () ->
-        {}
+  getCustomSchemaSettings: () ->
+    {}
 
 $$ = () ->
 
 console = {
-    log: () ->
-    debug: () ->
+  log: () ->
+  debug: () ->
 }
