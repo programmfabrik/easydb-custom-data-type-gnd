@@ -1,5 +1,7 @@
 The plugin is written in CoffeeScript, located in directory `scr/webfrontend/`.
 
+Please try to respect <https://github.com/polarmobile/coffeescript-style-guide>.
+
 Unit tests in directory `test` are written with Jasmine in CoffeeScript. 
 
 Each test must have file name with extension `.test.coffee`. These files are
