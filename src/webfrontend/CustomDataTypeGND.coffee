@@ -11,9 +11,9 @@ class CustomDataTypeGND extends CustomDataType
   # short info panel
   entityfacts_Panel = new Pane
   # locked gnd-URI
-  gndResultURI = ''
+  conceptURI = ''
   # locked gnd-Name
-  gndResultName = ''
+  conceptName = ''
 
   #######################################################################
   # return name of plugin
@@ -32,16 +32,16 @@ class CustomDataTypeGND extends CustomDataType
     # console.error @, data, top_level_data, opts, @name(), @fullName()
     if not data[@name()]
       cdata = {
-            gndResultName : ''
-            gndResultURI : ''
+            conceptName : ''
+            conceptURI : ''
         }
       data[@name()] = cdata
-      gndResultURI = ''
-      gndResultName = ''
+      conceptURI = ''
+      conceptName = ''
     else
       cdata = data[@name()]
-      gndResultName = cdata.gndResultName
-      gndResultURI = cdata.gndResultURI
+      conceptName = cdata.conceptName
+      conceptURI = cdata.conceptURI
 
     @__renderEditorInputPopover(data, cdata)
 
@@ -61,12 +61,12 @@ class CustomDataTypeGND extends CustomDataType
             onClick: (ev, btn) =>
               # delete data
               cdata = {
-                    gndResultName : ''
-                    gndResultURI : ''
+                    conceptName : ''
+                    conceptURI : ''
               }
               data.gnd = cdata
-              gndResultURI = ''
-              gndResultName = ''
+              conceptURI = ''
+              conceptName = ''
               # trigger form change
               Events.trigger
                 node: @__layout
@@ -197,6 +197,19 @@ class CustomDataTypeGND extends CustomDataType
 
     gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
     gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+    # if "search-all-types", search all allowed types
+    if gnd_searchtype == 'all_supported_types'
+      gnd_searchtype = []
+      if @getCustomSchemaSettings().add_differentiatedpersons?.value
+        gnd_searchtype.push 'DifferentiatedPerson'
+      if @getCustomSchemaSettings().add_coorporates?.value
+        gnd_searchtype.push 'CorporateBody'
+      if @getCustomSchemaSettings().add_geographicplaces?.value
+        gnd_searchtype.push 'PlaceOrGeographicName'
+      if @getCustomSchemaSettings().add_subjects?.value
+        gnd_searchtype.push 'SubjectHeading'
+      gnd_searchtype = gnd_searchtype.join(',')
+
     gnd_countSuggestions = cdata_form.getFieldsByName("gndSelectCountOfSuggestions")[0].getValue()
 
     if gnd_searchterm.length == 0
@@ -216,6 +229,22 @@ class CustomDataTypeGND extends CustomDataType
         menu_items = []
         for suggestion, key in data[1]
           do(key) ->
+            # the actual Featureclass...
+            aktType = data[2][key]
+            lastType = ''
+            if key > 0
+              lastType = data[2][key-1]
+            if aktType != lastType
+              console.log aktType
+              item =
+                divider: true
+              menu_items.push item
+              item =
+                label: aktType
+              menu_items.push item
+              item =
+                divider: true
+              menu_items.push item
             item =
               text: suggestion
               value: data[3][key]
@@ -227,7 +256,7 @@ class CustomDataTypeGND extends CustomDataType
                   # if enabled in mask-config
                   if that.getCustomMaskSettings().show_infopopup?.value
                     # if type is ready for infopopup
-                    if gnd_searchtype == "DifferentiatedPerson" or gnd_searchtype == "CorporateBody"
+                    if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
                       that.__getInfoFromEntityFacts(data[3][key], tooltip)
                       new Label(icon: "spinner", text: "lade Informationen")
             menu_items.push item
@@ -237,17 +266,17 @@ class CustomDataTypeGND extends CustomDataType
           onClick: (ev2, btn) ->
 
             # lock result in variables
-            gndResultName = btn.getText()
-            gndResultURI = btn.getOpt("value")
+            conceptName = btn.getText()
+            conceptURI = btn.getOpt("value")
 
             # lock in save data
-            cdata.gndResultURI = gndResultURI
-            cdata.gndResultName = gndResultName
+            cdata.conceptURI = conceptURI
+            cdata.conceptName = conceptName
             # lock in form
-            cdata_form.getFieldsByName("gndResultName")[0].storeValue(gndResultName).displayValue()
+            cdata_form.getFieldsByName("conceptName")[0].storeValue(conceptName).displayValue()
             # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-            cdata_form.getFieldsByName("gndResultURI")[0].__checkbox.setText(gndResultURI)
-            cdata_form.getFieldsByName("gndResultURI")[0].show()
+            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(conceptURI)
+            cdata_form.getFieldsByName("conceptURI")[0].show()
 
             # clear searchbar
             cdata_form.getFieldsByName("gndSearchBar")[0].setValue('')
@@ -281,10 +310,10 @@ class CustomDataTypeGND extends CustomDataType
   # reset form
   __resetGNDForm: (cdata, cdata_form) ->
     # clear variables
-    gndResultName = ''
-    gndResultURI = ''
-    cdata.gndResultName = ''
-    cdata.gndResultURI = ''
+    conceptName = ''
+    conceptURI = ''
+    cdata.conceptName = ''
+    cdata.conceptURI = ''
 
     # reset type-select
     cdata_form.getFieldsByName("gndSelectType")[0].setValue("DifferentiatedPerson")
@@ -296,11 +325,11 @@ class CustomDataTypeGND extends CustomDataType
     cdata_form.getFieldsByName("gndSearchBar")[0].setValue("")
 
     # reset result name
-    cdata_form.getFieldsByName("gndResultName")[0].storeValue("").displayValue()
+    cdata_form.getFieldsByName("conceptName")[0].storeValue("").displayValue()
 
     # reset and hide result-uri-button
-    cdata_form.getFieldsByName("gndResultURI")[0].__checkbox.setText("")
-    cdata_form.getFieldsByName("gndResultURI")[0].hide()
+    cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText("")
+    cdata_form.getFieldsByName("conceptURI")[0].hide()
 
 
   #######################################################################
@@ -355,8 +384,8 @@ class CustomDataTypeGND extends CustomDataType
             onClick: =>
               # put data to savedata
               data.gnd = {
-                gndResultName : cdata.gndResultName
-                gndResultURI : cdata.gndResultURI
+                conceptName : cdata.conceptName
+                conceptURI : cdata.conceptURI
               }
               # close popup
               @popover.destroy()
@@ -403,7 +432,13 @@ class CustomDataTypeGND extends CustomDataType
             text: 'Schlagwörter'
           )
         dropDownSearchOptions.push option
-
+    # add "Alle"-Option? If count of options > 1!
+    if dropDownSearchOptions.length > 1
+        option = (
+            value: 'all_supported_types'
+            text: 'Alle'
+          )
+        dropDownSearchOptions.unshift option
     # if empty options -> offer all
     if dropDownSearchOptions.length == 0
         dropDownSearchOptions = [
@@ -469,20 +504,20 @@ class CustomDataTypeGND extends CustomDataType
       form:
         label: "Gewählter Eintrag"
       type: Output
-      name: "gndResultName"
-      data: {gndResultName: gndResultName}
+      name: "conceptName"
+      data: {conceptName: conceptName}
     }
     {
       form:
         label: "Verknüpfte URI"
       type: FormButton
-      name: "gndResultURI"
+      name: "conceptURI"
       icon: new Icon(class: "fa-lightbulb-o")
-      text: gndResultURI
+      text: conceptURI
       onClick: (evt,button) =>
-        window.open gndResultURI, "_blank"
+        window.open conceptURI, "_blank"
       onRender : (_this) =>
-        if gndResultURI == ''
+        if conceptURI == ''
           _this.hide()
     }
     ]
@@ -496,32 +531,33 @@ class CustomDataTypeGND extends CustomDataType
   #######################################################################
   # checks the form and returns status
   getDataStatus: (cdata) ->
-    if cdata.gndResultURI and cdata.gndResultName
-                  
-      uriCheck = ///^
-        http://d-nb.info/gnd/
-        (1|1[01])\d{7}[0-9X]|[47]\d{6}-\d|[1-9]\d{0,7}-[0-9X]|3\d{7}[0-9X]
-        ///.test(cdata.gndResultURI)
+    if (cdata)
+        if cdata.conceptURI and cdata.conceptName
 
-      nameCheck = if cdata.gndResultName then cdata.gndResultName.trim() else undefined
+          uriCheck = ///^
+            http://d-nb.info/gnd/
+            (1|1[01])\d{7}[0-9X]|[47]\d{6}-\d|[1-9]\d{0,7}-[0-9X]|3\d{7}[0-9X]
+            ///.test(cdata.conceptURI)
 
-      if uriCheck and nameCheck
-        console.debug "getDataStatus: OK "
-        return "ok"
+          nameCheck = if cdata.conceptName then cdata.conceptName.trim() else undefined
 
-      if cdata.gndResultURI.trim() == '' and cdata.gndResultName.trim() == ''
-        console.debug "getDataStatus: empty"
-        return "empty"
+          if uriCheck and nameCheck
+            console.debug "getDataStatus: OK "
+            return "ok"
 
-      console.debug "getDataStatus returns invalid"
-      return "invalid"
-    else
-      cdata = {
-            gndResultName : ''
-            gndResultURI : ''
-        }
-      console.debug "getDataStatus: empty"
-      return "empty"
+          if cdata.conceptURI.trim() == '' and cdata.conceptName.trim() == ''
+            console.debug "getDataStatus: empty"
+            return "empty"
+
+          console.debug "getDataStatus returns invalid"
+          return "invalid"
+        else
+          cdata = {
+                conceptName : ''
+                conceptURI : ''
+            }
+          console.debug "getDataStatus: empty"
+          return "empty"
 
 
   #######################################################################
@@ -535,21 +571,21 @@ class CustomDataTypeGND extends CustomDataType
         return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
 
     # if status is ok
-    gndResultURI = CUI.parseLocation(cdata.gndResultURI).url
+    conceptURI = CUI.parseLocation(cdata.conceptURI).url
 
-    # if gndResultURI .... ... patch abwarten
+    # if conceptURI .... ... patch abwarten
 
-    tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.gndResultName)
+    tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked GND-Entry and Url to the Deutsche Nationalbibliothek
     new ButtonHref
       appearance: "link"
-      href: cdata.gndResultURI
+      href: cdata.conceptURI
       target: "_blank"
       tooltip:
         markdown: true
         text: tt_text
-      text: cdata.gndResultName + ' (' + cdata.gndResultURI + ')'
+      text: cdata.conceptName + ' (' + cdata.conceptURI + ')'
     .DOM
 
 
@@ -564,8 +600,8 @@ class CustomDataTypeGND extends CustomDataType
         save_data[@name()] = null
       when "ok"
         save_data[@name()] =
-          gndResultName: cdata.gndResultName.trim()
-          gndResultURI: cdata.gndResultURI.trim()
+          conceptName: cdata.conceptName.trim()
+          conceptURI: cdata.conceptURI.trim()
 
 
 
