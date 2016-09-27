@@ -13,17 +13,17 @@ describe 'CustomDataTypeGND', () ->
 
   it 'should check with getDataStatus', () ->
     cdata = {
-      gndResultName: " ",
-      gndResultURI: "\n"
+      conceptName: " ",
+      conceptURI: "\n"
     }
     expect(gndtype.getDataStatus(cdata)).toBe "empty"
 
     cdata = {
-      gndResultURI: "http://d-nb.info/gnd/1038709040",
-      gndResultName: "Voß, Jakob"
+      conceptURI: "http://d-nb.info/gnd/1038709040",
+      conceptName: "Voß, Jakob"
     }
     expect(gndtype.getDataStatus(cdata)).toBe "ok"
 
-    cdata.gndResultURI = "http://example.org/"
+    cdata.conceptURI = "http://example.org/"
     expect(gndtype.getDataStatus(cdata)).toBe "invalid"
 
