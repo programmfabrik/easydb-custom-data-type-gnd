@@ -5,3 +5,6 @@ console = {
   debug: () ->
 }
 
+location = {
+  protocol: "http"
+}

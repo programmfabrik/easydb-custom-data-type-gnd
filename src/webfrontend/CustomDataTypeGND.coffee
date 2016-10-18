@@ -22,7 +22,6 @@ class CustomDataTypeGND extends CustomDataType
   getCustomDataTypeName: ->
     "custom:base.custom-data-type-gnd.gnd"
 
-
   #######################################################################
   # return name (l10n) of plugin
   getCustomDataTypeNameLocalized: ->
@@ -381,7 +380,7 @@ class CustomDataTypeGND extends CustomDataType
       placement: "c"
       pane:
         # titel of popovers
-        header_left: new LocaLabel(loca_key: "custom.data.type.gnd.edit.modal.title")
+        header_left: new Label(text: "Web-GND konfigurieren")
         # "save"-button
         footer_left: new Button
             text: "Ok, Popup schließen"

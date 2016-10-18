@@ -7,7 +7,6 @@
 "custom.data.type.gnd.config.option.mask.editor_style.value.popover","Popover",
 "custom.data.type.gnd.modal.form.url.placeholder","GND-Verknüpfung",
 "custom.data.type.gnd.modal.form.text.label","Text",
-"custom.data.type.gnd.edit.modal.title|text","Web-GND konfigurieren",
 "custom.data.type.gnd.edit.no_valid_gnd","Keine valide GND-Verknüpfung",
 "custom.data.type.gnd.edit.no_gnd","Keine GND-Verknüpfung gesetzt",
 "custom.data.type.gnd.modal.form.text.type","Suche auf Typ einschränken",
