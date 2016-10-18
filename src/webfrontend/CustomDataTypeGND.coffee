@@ -14,6 +14,8 @@ class CustomDataTypeGND extends CustomDataType
   conceptURI = ''
   # locked gnd-Name
   conceptName = ''
+  # protocol
+  protocol = location.protocol;
 
   #######################################################################
   # return name of plugin
@@ -96,7 +98,9 @@ class CustomDataTypeGND extends CustomDataType
       # abort eventually running request
       entityfacts_xhr.abort()
     # start new request
-    entityfacts_xhr = new (CUI.XHR)(url: 'http://hub.culturegraph.org/entityfacts/' + gndID)
+    xurl = protocol + '//jsontojsonp.gbv.de/?url=http://hub.culturegraph.org/entityfacts/' + gndID
+    console.log xurl
+    entityfacts_xhr = new (CUI.XHR)(url: xurl)
     entityfacts_xhr.start()
     .done((data, status, statusText) ->
       htmlContent = '<span style="font-weight: bold">Informationen über den Eintrag</span>'
@@ -220,7 +224,7 @@ class CustomDataTypeGND extends CustomDataType
         # abort eventually running request
         gnd_xhr.abort()
     # start new request
-    gnd_xhr = new (CUI.XHR)(url: 'http://ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
+    gnd_xhr = new (CUI.XHR)(url: protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
     gnd_xhr.start().done((data, status, statusText) ->
 
         CUI.debug 'OK', gnd_xhr.getXHR(), gnd_xhr.getResponseHeaders()
