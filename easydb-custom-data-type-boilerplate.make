@@ -49,17 +49,19 @@ build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
 	$(L10N2JSON) $(CULTURES_CSV_IN_CONTAINER) $(L10N_FILES_IN_CONTAINER) $(PATH_IN_CONTAINER)/build/webfrontend/l10n/
 	@touch $@
 
-${JS_FILE}: $(COFFEE_FILE).js
+$(JS_FILE): $(COFFEE_FILE).js
 	mkdir -p build/webfrontend
 	cat $^ > $@
 
 test: $(patsubst %.test.coffee,%.spec.coffee,$(TEST_FILES))
 	@./node_modules/.bin/jasmine-node --coffee --verbose test
 
+browser_test: test/mock.easyDB.coffee.js $(JS_FILE)
+
 %.coffee.js: %.coffee
 	@coffee -b -p --compile "$^" > "$@" && echo "$@" || ( rm -f "$@" ; false )
 
-%.spec.coffee: test/mock.coffee $(COFFEE_FILE) %.test.coffee
+%.spec.coffee: test/mock.*.coffee $(COFFEE_FILE) %.test.coffee
 	@cat $^ > "$@" && echo "$@"
 
 .PHONY: clean test

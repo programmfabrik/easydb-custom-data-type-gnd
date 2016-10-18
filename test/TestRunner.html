@@ -1,0 +1,55 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body class="cui-body">
+
+    <script src="js/moment-with-locales.js" type="text/javascript"></script>
+    <script src="js/easydbui.js" type="text/javascript"></script>
+    <script src="js/marked.js" type="text/javascript"></script>
+    <script src="mock.easyDB.coffee.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    var gndData;
+
+    CUI.ready(function(){
+
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "../build/webfrontend/custom-data-type-gnd.js";
+
+      // run after initialization
+      script.onload = function() {
+        var cdata = {
+            conceptName: 'some name',
+            conceptURI: 'some URI'
+        };
+
+        gndData = new CustomDataTypeGND();
+        var data = {};
+        data[ gndData.name ] = cdata;
+        var opts = { };
+        
+        var layout = gndData.renderEditorInput(data);
+
+        CUI.DOM.prepend(document.body, layout.DOM);
+
+        // TODO: catch Editor changed and trigger:
+        // @__updateGNDResult(cdata)
+        // @__setEditorFieldStatus(cdata, @__layout)
+        // @__updateSuggestionsMenu(cdata, cdata_form)
+
+      };
+      document.body.appendChild(script);
+
+      // enable theme
+      CUI.CSS.registerTheme({name:'light',url:CUI.pathToScript+"/../cui_demo_light.css"});
+      CUI.CSS.loadTheme('light');
+
+      // create some content to attach plugin to
+      var label = new Label({ text: 'Hello, World!' });
+      CUI.DOM.prepend(document.body, label.DOM);
+    });
+    </script> 
+  </body>      
+</html>

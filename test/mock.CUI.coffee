@@ -1,5 +1,4 @@
-class Session
-
+# minimal mockup of CUI
 class Menu
 
 class Pane
@@ -24,15 +23,3 @@ class CUI
 
   @debug: () ->
 
-class CustomDataType
-  @register: (datatype) -> 
-
-  getCustomSchemaSettings: () ->
-    {}
-
-$$ = () ->
-
-console = {
-  log: () ->
-  debug: () ->
-}

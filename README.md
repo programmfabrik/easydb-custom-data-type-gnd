@@ -6,11 +6,15 @@ The Plugins uses <http://ws.gbv.de/suggest/gnd/> for the autocomplete-suggestion
 
 ## configuration
 
-In `CustomDataTypeGND.config.yml` you can configure:
+As defined in `CustomDataTypeGND.config.yml` this datatype can be configured:
 
-* `schema-options`: which entity types are offered for search
+### Schema options
 
-* `mask-options`: whether additional informationen is loaded if the mouse hovers a suggestion in the search result
+* which entity types are offered for search
+
+### Mask options
+
+* whether additional informationen is loaded if the mouse hovers a suggestion in the search result
 
 ## sources
 
