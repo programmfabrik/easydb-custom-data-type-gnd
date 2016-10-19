@@ -4,51 +4,82 @@
     <meta charset="utf-8">
   </head>
   <body class="cui-body">
-
+ 
     <script src="js/moment-with-locales.js" type="text/javascript"></script>
     <script src="js/easydbui.js" type="text/javascript"></script>
+
+	<!-- TODO: Positioner seems to be removed in new version of CUI? -->
+    <script src="js/Positioner.js" type="text/javascript"></script>
+
     <script src="js/marked.js" type="text/javascript"></script>
     <script src="mock.easyDB.coffee.js" type="text/javascript"></script>
     <script type="text/javascript">
-    var gndData;
+    var gndDataType;
+	var gndData = {};
 
     CUI.ready(function(){
-
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      script.src = "../build/webfrontend/custom-data-type-gnd.js";
-
-      // run after initialization
-      script.onload = function() {
-        var cdata = {
-            conceptName: 'some name',
-            conceptURI: 'some URI'
-        };
-
-        gndData = new CustomDataTypeGND();
-        var data = {};
-        data[ gndData.name ] = cdata;
-        var opts = { };
-        
-        var layout = gndData.renderEditorInput(data);
-
-        CUI.DOM.prepend(document.body, layout.DOM);
-
-        // TODO: catch Editor changed and trigger:
-        // @__updateGNDResult(cdata)
-        // @__setEditorFieldStatus(cdata, @__layout)
-        // @__updateSuggestionsMenu(cdata, cdata_form)
-
-      };
-      document.body.appendChild(script);
 
       // enable theme
       CUI.CSS.registerTheme({name:'light',url:CUI.pathToScript+"/../cui_demo_light.css"});
       CUI.CSS.loadTheme('light');
 
+      // register required event types
+      CUI.Events.registerEvent({
+        type: "editor-changed",
+        bubble: true
+      });
+
+      // get l10n data from CSV, only parse first and second column with known format
+      var xhr = new CUI.XHR({ url: "../l10n/custom-data-type-gnd.csv", responseType: "text" });
+      xhr.start().done(function(data) {
+		var pattern = /^"([^\"]+)\"\s*,\s*"([^\"]+)\"/;
+		data.split("\n").forEach(function(line) {
+			if (match = pattern.exec(line)) {
+				I10N[match[1]] = match[2];
+			}
+		});
+      });
+
       // create some content to attach plugin to
+	  var layer = new CUI.Layer();
+      CUI.DOM.prepend(document.body, layer.DOM);
+
       var label = new Label({ text: 'Hello, World!' });
-      CUI.DOM.prepend(document.body, label.DOM);
+      CUI.DOM.prepend(layer.DOM, label.DOM);
+
+      // include plugin afterwards
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "../build/webfrontend/custom-data-type-gnd.js";
+      
+      // run after initialization
+      script.onload = function() {
+
+        gndDataType = new CustomDataTypeGND();
+
+        // custom settings
+        CONFIG[ gndDataType.name() ] = { 
+            mask: {
+                show_infopopup: { value: true }
+            },
+            schema: {
+                add_differentiatedpersons: { value: true },
+                add_coorporates: { value: true },
+                add_geographicplaces: { value: true },
+                add_subjects: { value: true },
+            }
+        };
+
+		// initialize with sample data
+        gndData[ gndDataType.name() ] = {
+			conceptName: "Kinder, Marcus",
+			conceptURI: "http://d-nb.info/gnd/10427607X",
+		};
+
+        var layout = gndDataType.renderEditorInput(gndData);
+        CUI.DOM.prepend(layer.DOM, layout.DOM);
+      };
+      document.body.appendChild(script);
     });
     </script> 
   </body>      

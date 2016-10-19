@@ -36,7 +36,7 @@ COFFEE_FILE = src/webfrontend/CustomDataType$(DATA_TYPE_NAME).coffee
 JS_FILE = build/webfrontend/$(DATA_TYPE_FILENAME).js
 TEST_FILES = $(wildcard test/*.test.coffee)
 
-all: test ${JS_FILE} build-stamp-l10n
+all: coffee test build-stamp-l10n
 
 clean:
 	@rm -f src/webfrontend/*.coffee.js
@@ -49,6 +49,8 @@ build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
 	$(L10N2JSON) $(CULTURES_CSV_IN_CONTAINER) $(L10N_FILES_IN_CONTAINER) $(PATH_IN_CONTAINER)/build/webfrontend/l10n/
 	@touch $@
 
+coffee: $(JS_FILE)
+
 $(JS_FILE): $(COFFEE_FILE).js
 	mkdir -p build/webfrontend
 	cat $^ > $@
@@ -56,7 +58,7 @@ $(JS_FILE): $(COFFEE_FILE).js
 test: $(patsubst %.test.coffee,%.spec.coffee,$(TEST_FILES))
 	@./node_modules/.bin/jasmine-node --coffee --verbose test
 
-browser_test: test/mock.easyDB.coffee.js $(JS_FILE)
+browser_test: coffee test/mock.easyDB.coffee.js
 
 %.coffee.js: %.coffee
 	@coffee -b -p --compile "$^" > "$@" && echo "$@" || ( rm -f "$@" ; false )
