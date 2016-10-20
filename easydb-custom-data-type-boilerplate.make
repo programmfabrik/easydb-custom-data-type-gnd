@@ -56,7 +56,7 @@ $(JS_FILE): $(COFFEE_FILE).js
 	cat $^ > $@
 
 test: $(patsubst %.test.coffee,%.spec.coffee,$(TEST_FILES))
-	@./node_modules/.bin/jasmine-node --coffee --verbose test
+	-@./node_modules/.bin/jasmine-node --coffee --verbose test
 
 browser_test: coffee test/mock.easyDB.coffee.js
 
