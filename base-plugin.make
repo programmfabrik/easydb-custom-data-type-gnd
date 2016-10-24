@@ -1,4 +1,5 @@
-PLUGIN_NAME = custom-data-type-gnd
+include names.md
+
 INSTALL_FILES = \
 	$(WEB)/l10n/cultures.json \
 	$(WEB)/l10n/de-DE.json \
@@ -6,10 +7,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
-	CustomDataTypeGND.config.yml
-
-L10N_FILES = l10n/$(PLUGIN_NAME).csv
-COFFEE_FILES = src/webfrontend/CustomDataTypeGND.coffee
+	$(PLUGIN_CONFIG_FILE)
 
 all: build
 
