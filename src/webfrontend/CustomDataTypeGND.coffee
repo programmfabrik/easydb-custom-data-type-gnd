@@ -3,9 +3,6 @@ Session::getCustomDataTypes = ->
 
 class CustomDataTypeGND extends CustomDataType
 
-  # the eventually running xhrs
-  extendedInfo_xhr = undefined
-
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
@@ -71,7 +68,7 @@ class CustomDataTypeGND extends CustomDataType
 
   #######################################################################
   # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
-  __getInfoFromEntityFacts: (uri, tooltip) ->
+  __getInfoFromEntityFacts: (uri, tooltip, extendedInfo_xhr) ->
     # extract gndID from uri
     gndID = uri
     gndID = gndID.split "/"
@@ -82,7 +79,6 @@ class CustomDataTypeGND extends CustomDataType
       extendedInfo_xhr.abort()
     # start new request
     xurl = location.protocol + '//jsontojsonp.gbv.de/?url=http://hub.culturegraph.org/entityfacts/' + gndID
-    console.log xurl
     extendedInfo_xhr = new (CUI.XHR)(url: xurl)
     extendedInfo_xhr.start()
     .done((data, status, statusText) ->
@@ -211,7 +207,8 @@ class CustomDataTypeGND extends CustomDataType
     searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
         CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
-
+        # init xhr for tooltipcontent
+        extendedInfo_xhr = undefined
         # create new menu with suggestions
         menu_items = []
         for suggestion, key in data[1]
@@ -244,7 +241,7 @@ class CustomDataTypeGND extends CustomDataType
                   if that.getCustomMaskSettings().show_infopopup?.value
                     # if type is ready for infopopup
                     if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
-                      that.__getInfoFromEntityFacts(data[3][key], tooltip)
+                      that.__getInfoFromEntityFacts(data[3][key], tooltip, extendedInfo_xhr)
                       new Label(icon: "spinner", text: "lade Informationen")
             menu_items.push item
 
