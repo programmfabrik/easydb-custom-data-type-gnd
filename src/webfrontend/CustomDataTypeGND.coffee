@@ -4,23 +4,13 @@ Session::getCustomDataTypes = ->
 class CustomDataTypeGND extends CustomDataType
 
   # the eventually running xhrs
-  gnd_xhr = undefined
-  entityfacts_xhr = undefined
-  # suggestMenu
-  suggest_Menu = new Menu
-  # short info panel
-  entityfacts_Panel = new Pane
-  # locked gnd-URI
-  conceptURI = ''
-  # locked gnd-Name
-  conceptName = ''
-  # protocol
-  protocol = location.protocol;
+  extendedInfo_xhr = undefined
 
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
     "custom:base.custom-data-type-gnd.gnd"
+
 
   #######################################################################
   # return name (l10n) of plugin
@@ -37,12 +27,8 @@ class CustomDataTypeGND extends CustomDataType
             conceptURI : ''
         }
       data[@name()] = cdata
-      conceptURI = ''
-      conceptName = ''
     else
       cdata = data[@name()]
-      conceptName = cdata.conceptName
-      conceptURI = cdata.conceptURI
 
     @__renderEditorInputPopover(data, cdata)
 
@@ -66,8 +52,6 @@ class CustomDataTypeGND extends CustomDataType
                     conceptURI : ''
               }
               data.gnd = cdata
-              conceptURI = ''
-              conceptName = ''
               # trigger form change
               Events.trigger
                 node: @__layout
@@ -93,18 +77,18 @@ class CustomDataTypeGND extends CustomDataType
     gndID = gndID.split "/"
     gndID = gndID.pop()
     # download infos from entityfacts
-    if entityfacts_xhr != undefined
+    if extendedInfo_xhr != undefined
       # abort eventually running request
-      entityfacts_xhr.abort()
+      extendedInfo_xhr.abort()
     # start new request
-    xurl = protocol + '//jsontojsonp.gbv.de/?url=http://hub.culturegraph.org/entityfacts/' + gndID
+    xurl = location.protocol + '//jsontojsonp.gbv.de/?url=http://hub.culturegraph.org/entityfacts/' + gndID
     console.log xurl
-    entityfacts_xhr = new (CUI.XHR)(url: xurl)
-    entityfacts_xhr.start()
+    extendedInfo_xhr = new (CUI.XHR)(url: xurl)
+    extendedInfo_xhr.start()
     .done((data, status, statusText) ->
-      htmlContent = '<span style="font-weight: bold">Informationen über den Eintrag</span>'
+      htmlContent = ''
       htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
-
+      htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
       ##########################
       # DifferentiatedPerson and CorporateBody
 
@@ -184,18 +168,18 @@ class CustomDataTypeGND extends CustomDataType
           htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
 
       htmlContent += "</table>"
-      tooltip.getPane().replace(htmlContent, "center")
+      tooltip.DOM.html(htmlContent);
       tooltip.autoSize()
     )
     .fail (data, status, statusText) ->
-        CUI.debug 'FAIL', entityfacts_xhr.getXHR(), entityfacts_xhr.getResponseHeaders()
+        CUI.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
 
     return
 
 
   #######################################################################
   # handle suggestions-menu
-  __updateSuggestionsMenu: (cdata, cdata_form) ->
+  __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu, searchsuggest_xhr) ->
     that = @
 
     gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
@@ -219,14 +203,14 @@ class CustomDataTypeGND extends CustomDataType
         return
 
     # run autocomplete-search via xhr
-    if gnd_xhr != undefined
+    if searchsuggest_xhr.xhr != undefined
         # abort eventually running request
-        gnd_xhr.abort()
+        searchsuggest_xhr.xhr.abort()
     # start new request
-    gnd_xhr = new (CUI.XHR)(url: protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
-    gnd_xhr.start().done((data, status, statusText) ->
+    searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
+    searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
-        CUI.debug 'OK', gnd_xhr.getXHR(), gnd_xhr.getResponseHeaders()
+        CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
 
         # create new menu with suggestions
         menu_items = []
@@ -267,18 +251,13 @@ class CustomDataTypeGND extends CustomDataType
         # set new items to menu
         itemList =
           onClick: (ev2, btn) ->
-
-            # lock result in variables
-            conceptName = btn.getText()
-            conceptURI = btn.getOpt("value")
-
             # lock in save data
-            cdata.conceptURI = conceptURI
-            cdata.conceptName = conceptName
+            cdata.conceptURI = btn.getOpt("value")
+            cdata.conceptName = btn.getText()
             # lock in form
-            cdata_form.getFieldsByName("conceptName")[0].storeValue(conceptName).displayValue()
+            cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
             # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(conceptURI)
+            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
             cdata_form.getFieldsByName("conceptURI")[0].show()
 
             # clear searchbar
@@ -295,14 +274,7 @@ class CustomDataTypeGND extends CustomDataType
 
         suggest_Menu.setItemList(itemList)
 
-        suggest_Menu.show(
-          new Positioner(
-            top: 60
-            left: 400
-            width: 0
-            height: 0
-          )
-        )
+        suggest_Menu.show()
 
     )
     #.fail (data, status, statusText) ->
@@ -313,8 +285,6 @@ class CustomDataTypeGND extends CustomDataType
   # reset form
   __resetGNDForm: (cdata, cdata_form) ->
     # clear variables
-    conceptName = ''
-    conceptURI = ''
     cdata.conceptName = ''
     cdata.conceptURI = ''
 
@@ -353,34 +323,31 @@ class CustomDataTypeGND extends CustomDataType
   #######################################################################
   # show popover and fill it with the form-elements
   showEditPopover: (btn, cdata, data) ->
+    # init suggestmenu
+    suggest_Menu = new Menu
+        show_at_position:
+            top: 60
+            left: 400
+    # init xhr-object to abort running xhrs
+    searchsuggest_xhr = { "xhr" : undefined }
     # set default value for count of suggestions
     cdata.gndSelectCountOfSuggestions = 20
     cdata_form = new Form
       data: cdata
-      fields: @__getEditorFields()
+      fields: @__getEditorFields(cdata)
       onDataChanged: =>
         @__updateGNDResult(cdata)
         @__setEditorFieldStatus(cdata, @__layout)
-        @__updateSuggestionsMenu(cdata, cdata_form)
+        @__updateSuggestionsMenu(cdata, cdata_form,suggest_Menu, searchsuggest_xhr)
     .start()
-    xpane = new SimplePane
-      class: "cui-demo-pane-pane"
-      header_left:
-        new Label
-          text: "Header left shortcut"
-      content:
-        new Label
-          text: "Center content shortcut"
-      footer_right:
-        new Label
-          text: "Footer right shortcut"
+
     @popover = new Popover
       element: btn
       fill_space: "both"
       placement: "c"
       pane:
         # titel of popovers
-        header_left: new Label(text: "Web-GND konfigurieren")
+        header_left: new LocaLabel(loca_key: "custom.data.type.gnd.edit.modal.title")
         # "save"-button
         footer_left: new Button
             text: "Ok, Popup schließen"
@@ -404,7 +371,7 @@ class CustomDataTypeGND extends CustomDataType
 
   #######################################################################
   # create form
-  __getEditorFields: ->
+  __getEditorFields: (cdata) ->
     # read searchtypes from datamodell-options
     dropDownSearchOptions = []
     # offer DifferentiatedPerson
@@ -508,7 +475,7 @@ class CustomDataTypeGND extends CustomDataType
         label: "Gewählter Eintrag"
       type: Output
       name: "conceptName"
-      data: {conceptName: conceptName}
+      data: {conceptName: cdata.conceptName}
     }
     {
       form:
@@ -516,11 +483,11 @@ class CustomDataTypeGND extends CustomDataType
       type: FormButton
       name: "conceptURI"
       icon: new Icon(class: "fa-lightbulb-o")
-      text: conceptURI
+      text: cdata.conceptURI
       onClick: (evt,button) =>
-        window.open conceptURI, "_blank"
+        window.open cdata.conceptURI, "_blank"
       onRender : (_this) =>
-        if conceptURI == ''
+        if cdata.conceptURI == ''
           _this.hide()
     }
     ]
@@ -605,7 +572,6 @@ class CustomDataTypeGND extends CustomDataType
         save_data[@name()] =
           conceptName: cdata.conceptName.trim()
           conceptURI: cdata.conceptURI.trim()
-
 
 
   renderCustomDataOptionsInDatamodel: (custom_settings) ->
