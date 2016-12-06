@@ -241,7 +241,6 @@ class CustomDataTypeGND extends CustomDataType
               value: data[3][key]
               tooltip:
                 markdown: true
-                auto_size: true
                 placement: "e"
                 content: (tooltip) ->
                   # if enabled in mask-config
