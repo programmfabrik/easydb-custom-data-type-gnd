@@ -1,3 +1,10 @@
+/*
+ * easydb-custom-data-type-gnd - easydb 5 plugin
+ * Copyright (c) 2016 Programmfabrik GmbH
+ * MIT Licence
+ * https://github.com/programmfabrik/easydb-custom-data-type-gnd
+*/
+
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css);
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,600,700,800,300);
 .cui-label.cui-label-multiline > .cui-label-content, .cui-form .cui-label:not(.cui-tmpl-label-rotate-90) > .cui-label-content, .cui-data-field-output-label > .cui-label-content, .cui-button-checkbox.cui-button .cui-button-center, .cui-tree-node > .cui-tree-node-content > .cui-label > .cui-label-content {
