@@ -1,10 +1,3 @@
-###
- * easydb-custom-data-type-gnd - easydb 5 plugin
- * Copyright (c) 2016 Programmfabrik GmbH, Verbundzentrale des GBV (VZG)
- * MIT Licence
- * https://github.com/programmfabrik/easydb-custom-data-type-gnd
-###
-
 Session::getCustomDataTypes = ->
   @getDefaults().server.custom_data_types or {}
 
@@ -577,8 +570,32 @@ class CustomDataTypeGND extends CustomDataType
           conceptURI: cdata.conceptURI.trim()
 
 
+  #######################################################################
+  # zeige die gewählten Optionen im Datenmodell unter dem Button an
   renderCustomDataOptionsInDatamodel: (custom_settings) ->
-    @
+    labelText = '';
+
+    if custom_settings.add_differentiatedpersons?.value
+      labelText += "✓ Personen \n"
+    else
+      labelText += "✘ Personen \n"
+
+    if custom_settings.add_coorporates?.value
+      labelText += "✓ Körperschaften \n"
+    else
+      labelText += "✘ Körperschaften \n"
+
+    if custom_settings.add_geographicplaces?.value
+      labelText += "✓ Orte \n"
+    else
+      labelText += "✘ Orte \n"
+
+    if custom_settings.add_subjects?.value
+      labelText += "✓ Schlagwörter \n"
+    else
+      labelText += "✘ Schlagwörter \n"
+
+    new Label(multiline: true, text: labelText)
 
 
 CustomDataType.register(CustomDataTypeGND)
