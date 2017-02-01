@@ -3,6 +3,11 @@ Session::getCustomDataTypes = ->
 
 class CustomDataTypeGND extends CustomDataType
 
+  CUI.ready =>
+    style = DOM.element("style")
+    style.innerHTML = ".gndpopover { min-width:600px !important; } .gndInput .cui-button-visual, .gndSelect .cui-button-visual { width: 100%; } .gndSelect > div { width: 100%; }"
+    document.head.appendChild(style)
+
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
@@ -36,24 +41,35 @@ class CustomDataTypeGND extends CustomDataType
     @__layout = new HorizontalLayout
       left:
         content:
-            loca_key: "custom.data.type.gnd.edit.button"
-            onClick: (ev, btn) =>
-              @showEditPopover(btn, cdata, data)
-      center:
-        content:
-            loca_key: "custom.data.type.gnd.remove.button"
-            onClick: (ev, btn) =>
-              # delete data
-              cdata = {
-                    conceptName : ''
-                    conceptURI : ''
-              }
-              data.gnd = cdata
-              # trigger form change
-              Events.trigger
-                node: @__layout
-                type: "editor-changed"
-              @__updateGNDResult(cdata)
+            new Buttonbar(
+              buttons: [
+                  new Button
+                      text: ""
+                      icon: 'edit'
+                      group: "groupA"
+
+                      onClick: (ev, btn) =>
+                        @showEditPopover(btn, cdata, data)
+
+                  new Button
+                      text: ""
+                      icon: 'trash'
+                      group: "groupA"
+                      onClick: (ev, btn) =>
+                        # delete data
+                        cdata = {
+                              conceptName : ''
+                              conceptURI : ''
+                        }
+                        data[@name()] = cdata
+                        # trigger form change
+                        Events.trigger
+                          node: @__layout
+                          type: "editor-changed"
+                        @__updateGNDResult(cdata)
+              ]
+            )
+      center: {}
       right: {}
     @__updateGNDResult(cdata)
     @__layout
@@ -219,7 +235,6 @@ class CustomDataTypeGND extends CustomDataType
             if key > 0
               lastType = data[2][key-1]
             if aktType != lastType
-              console.log aktType
               item =
                 divider: true
               menu_items.push item
@@ -271,7 +286,6 @@ class CustomDataTypeGND extends CustomDataType
         suggest_Menu.setItemList(itemList)
 
         suggest_Menu.show()
-
     )
     #.fail (data, status, statusText) ->
         #CUI.debug 'FAIL', gnd_xhr.getXHR(), gnd_xhr.getResponseHeaders()
@@ -319,11 +333,7 @@ class CustomDataTypeGND extends CustomDataType
   #######################################################################
   # show popover and fill it with the form-elements
   showEditPopover: (btn, cdata, data) ->
-    # init suggestmenu
-    suggest_Menu = new Menu
-        show_at_position:
-            top: 60
-            left: 400
+
     # init xhr-object to abort running xhrs
     searchsuggest_xhr = { "xhr" : undefined }
     # set default value for count of suggestions
@@ -337,16 +347,21 @@ class CustomDataTypeGND extends CustomDataType
         @__updateSuggestionsMenu(cdata, cdata_form,suggest_Menu, searchsuggest_xhr)
     .start()
 
+    # init suggestmenu
+    suggest_Menu = new Menu
+        element : cdata_form.getFieldsByName("gndSearchBar")[0]
+        use_element_width_as_min_width: true
+
     @popover = new Popover
       element: btn
-      fill_space: "both"
-      placement: "c"
+      placement: "wn"
+      class: "gndpopover"
       pane:
         # titel of popovers
         header_left: new LocaLabel(loca_key: "custom.data.type.gnd.edit.modal.title")
         # "save"-button
-        footer_left: new Button
-            text: "Ok, Popup schließen"
+        footer_right: new Button
+            text: "Übernehmen"
             onClick: =>
               # put data to savedata
               data.gnd = {
@@ -356,7 +371,7 @@ class CustomDataTypeGND extends CustomDataType
               # close popup
               @popover.destroy()
         # "reset"-button
-        footer_right: new Button
+        footer_left: new Button
             text: "Zurücksetzen"
             onClick: =>
               @__resetGNDForm(cdata, cdata_form)
@@ -432,10 +447,12 @@ class CustomDataTypeGND extends CustomDataType
           label: $$('custom.data.type.gnd.modal.form.text.type')
       options: dropDownSearchOptions
       name: 'gndSelectType'
+      class: 'gndSelect'
     }
     {
       type: Select
       undo_and_changed_support: false
+      class: 'gndSelect'
       form:
           label: $$('custom.data.type.gnd.modal.form.text.count')
       options: [
@@ -465,6 +482,7 @@ class CustomDataTypeGND extends CustomDataType
           label: $$("custom.data.type.gnd.modal.form.text.searchbar")
       placeholder: $$("custom.data.type.gnd.modal.form.text.searchbar.placeholder")
       name: "gndSearchBar"
+      class: 'gndInput'
     }
     {
       form:
@@ -551,7 +569,7 @@ class CustomDataTypeGND extends CustomDataType
       tooltip:
         markdown: true
         text: tt_text
-      text: cdata.conceptName + ' (' + cdata.conceptURI + ')'
+      text: cdata.conceptName
     .DOM
 
 
