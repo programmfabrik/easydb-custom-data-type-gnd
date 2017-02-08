@@ -552,12 +552,22 @@ class CustomDataTypeGND extends CustomDataType
             }
           console.debug "getDataStatus: empty"
           return "empty"
+    else
+      cdata = {
+            conceptName : ''
+            conceptURI : ''
+        }
+      console.debug "getDataStatus: empty"
+      return "empty"
 
 
   #######################################################################
   # renders the "result" in original form (outside popover)
   __renderButtonByData: (cdata) ->
     # when status is empty or invalid --> message
+    console.log '___'
+    console.log @getDataStatus(cdata)
+    console.log '___'
     switch @getDataStatus(cdata)
       when "empty"
         return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
