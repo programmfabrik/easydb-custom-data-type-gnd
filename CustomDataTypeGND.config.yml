@@ -11,10 +11,42 @@ custom_types:
   gnd:
     elasticsearch:
       mapping:
-        type: l10ntext
-      value:
-        origin: json
-        key: text
+        type: object
+        properties:
+          conceptName:
+            type: string
+            index: no
+            fields:
+              exact:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_exact_analyzer
+              folded:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_folded_analyzer
+              fulltext:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_fulltext_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              phrase:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_phrase_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              sort:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: sort_de-DE
+              suggest:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_suggest_analyzer
+              token:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_text_token_analyzer
     config:
       schema:
         - name: add_differentiatedpersons
