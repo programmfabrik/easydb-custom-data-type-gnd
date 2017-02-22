@@ -203,101 +203,119 @@ class CustomDataTypeGND extends CustomDataType
   __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu, searchsuggest_xhr) ->
     that = @
 
-    gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
-    gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
-    # if "search-all-types", search all allowed types
-    if gnd_searchtype == 'all_supported_types'
-      gnd_searchtype = []
-      if @getCustomSchemaSettings().add_differentiatedpersons?.value
-        gnd_searchtype.push 'DifferentiatedPerson'
-      if @getCustomSchemaSettings().add_coorporates?.value
-        gnd_searchtype.push 'CorporateBody'
-      if @getCustomSchemaSettings().add_geographicplaces?.value
-        gnd_searchtype.push 'PlaceOrGeographicName'
-      if @getCustomSchemaSettings().add_subjects?.value
-        gnd_searchtype.push 'SubjectHeading'
-      gnd_searchtype = gnd_searchtype.join(',')
+    delayMillisseconds = 200
 
-    gnd_countSuggestions = cdata_form.getFieldsByName("gndSelectCountOfSuggestions")[0].getValue()
+    setTimeout ( ->
+      console.log "function __updateSuggestionsMenu"
+      gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
+      console.log "searchterm: " + gnd_searchterm
 
-    if gnd_searchterm.length == 0
-        return
+      gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+      # if "search-all-types", search all allowed types
+      if gnd_searchtype == 'all_supported_types'
+        gnd_searchtype = []
+        if that.getCustomSchemaSettings().add_differentiatedpersons?.value
+          gnd_searchtype.push 'DifferentiatedPerson'
+        if that.getCustomSchemaSettings().add_coorporates?.value
+          gnd_searchtype.push 'CorporateBody'
+        if that.getCustomSchemaSettings().add_geographicplaces?.value
+          gnd_searchtype.push 'PlaceOrGeographicName'
+        if that.getCustomSchemaSettings().add_subjects?.value
+          gnd_searchtype.push 'SubjectHeading'
+        gnd_searchtype = gnd_searchtype.join(',')
 
-    # run autocomplete-search via xhr
-    if searchsuggest_xhr.xhr != undefined
-        # abort eventually running request
-        searchsuggest_xhr.xhr.abort()
-    # start new request
-    searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
-    searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
+      gnd_countSuggestions = cdata_form.getFieldsByName("gndSelectCountOfSuggestions")[0].getValue()
 
-        CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
-        # init xhr for tooltipcontent
-        extendedInfo_xhr = undefined
-        # create new menu with suggestions
-        menu_items = []
-        for suggestion, key in data[1]
-          do(key) ->
-            # the actual Featureclass...
-            aktType = data[2][key]
-            lastType = ''
-            if key > 0
-              lastType = data[2][key-1]
-            if aktType != lastType
+      if gnd_searchterm.length == 0
+          return
+
+      # run autocomplete-search via xhr
+      if searchsuggest_xhr.xhr != undefined
+          # abort eventually running request
+          searchsuggest_xhr.xhr.abort()
+
+      # start new request
+      searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
+      searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
+
+          CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
+          # init xhr for tooltipcontent
+          extendedInfo_xhr = undefined
+          # create new menu with suggestions
+          menu_items = []
+          for suggestion, key in data[1]
+            do(key) ->
+              # the actual Featureclass...
+              aktType = data[2][key]
+              lastType = ''
+              if key > 0
+                lastType = data[2][key-1]
+              if aktType != lastType
+                item =
+                  divider: true
+                menu_items.push item
+                item =
+                  label: aktType
+                menu_items.push item
+                item =
+                  divider: true
+                menu_items.push item
               item =
-                divider: true
+                text: suggestion
+                value: data[3][key]
+                tooltip:
+                  markdown: true
+                  placement: "e"
+                  content: (tooltip) ->
+                    # if enabled in mask-config
+                    if that.getCustomMaskSettings().show_infopopup?.value
+                      # if type is ready for infopopup
+                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
+                        that.__getInfoFromEntityFacts(data[3][key], tooltip, extendedInfo_xhr)
+                        new Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
-              item =
-                label: aktType
-              menu_items.push item
-              item =
-                divider: true
-              menu_items.push item
-            item =
-              text: suggestion
-              value: data[3][key]
-              tooltip:
-                markdown: true
-                placement: "e"
-                content: (tooltip) ->
-                  # if enabled in mask-config
-                  if that.getCustomMaskSettings().show_infopopup?.value
-                    # if type is ready for infopopup
-                    if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
-                      that.__getInfoFromEntityFacts(data[3][key], tooltip, extendedInfo_xhr)
-                      new Label(icon: "spinner", text: "lade Informationen")
-            menu_items.push item
 
-        # set new items to menu
-        itemList =
-          onClick: (ev2, btn) ->
-            # lock in save data
-            cdata.conceptURI = btn.getOpt("value")
-            cdata.conceptName = btn.getText()
-            # lock in form
-            cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
-            # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-            cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
-            cdata_form.getFieldsByName("conceptURI")[0].show()
-
-            # clear searchbar
-            cdata_form.getFieldsByName("gndSearchBar")[0].setValue('')
-          items: menu_items
-
-        # if no hits set "empty" message to menu
-        if itemList.items.length == 0
+          # set new items to menu
           itemList =
-            items: [
-              text: "kein Treffer"
-              value: undefined
-            ]
+            onClick: (ev2, btn) ->
+              console.log "clicked on item begin"
+              # lock in save data
+              cdata.conceptURI = btn.getOpt("value")
+              cdata.conceptName = btn.getText()
+              # lock in form
+              cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
+              # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
+              cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
+              cdata_form.getFieldsByName("conceptURI")[0].show()
 
-        suggest_Menu.setItemList(itemList)
+              # clear searchbar
+              console.log "vorm setValue = empty"
+              cdata_form.getFieldsByName("gndSearchBar")[0].setValue('')
+              console.log cdata_form.getFieldsByName("gndSearchBar")[0]
+              console.log "getValue"
+              console.log cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
+              # hide suggest-menu
+              console.log "verstecke menu"
+              suggest_Menu.hide()
+              console.log "clicked on item ende"
+              @
+            items: menu_items
 
-        suggest_Menu.show()
-    )
-    #.fail (data, status, statusText) ->
-        #CUI.debug 'FAIL', gnd_xhr.getXHR(), gnd_xhr.getResponseHeaders()
+          # if no hits set "empty" message to menu
+          if itemList.items.length == 0
+            itemList =
+              items: [
+                text: "kein Treffer"
+                value: undefined
+              ]
+
+          suggest_Menu.setItemList(itemList)
+
+          suggest_Menu.show()
+      )
+      .fail (data, status, statusText) ->
+          CUI.debug 'FAIL', searchsuggest_xhr.getXHR(), searchsuggest_xhr.getResponseHeaders()
+    ), delayMillisseconds
 
 
   #######################################################################
