@@ -206,9 +206,7 @@ class CustomDataTypeGND extends CustomDataType
     delayMillisseconds = 200
 
     setTimeout ( ->
-      console.log "function __updateSuggestionsMenu"
       gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
-      console.log "searchterm: " + gnd_searchterm
 
       gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
       # if "search-all-types", search all allowed types
@@ -278,7 +276,6 @@ class CustomDataTypeGND extends CustomDataType
           # set new items to menu
           itemList =
             onClick: (ev2, btn) ->
-              console.log "clicked on item begin"
               # lock in save data
               cdata.conceptURI = btn.getOpt("value")
               cdata.conceptName = btn.getText()
@@ -289,15 +286,9 @@ class CustomDataTypeGND extends CustomDataType
               cdata_form.getFieldsByName("conceptURI")[0].show()
 
               # clear searchbar
-              console.log "vorm setValue = empty"
               cdata_form.getFieldsByName("gndSearchBar")[0].setValue('')
-              console.log cdata_form.getFieldsByName("gndSearchBar")[0]
-              console.log "getValue"
-              console.log cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
               # hide suggest-menu
-              console.log "verstecke menu"
               suggest_Menu.hide()
-              console.log "clicked on item ende"
               @
             items: menu_items
 
@@ -583,9 +574,7 @@ class CustomDataTypeGND extends CustomDataType
   # renders the "result" in original form (outside popover)
   __renderButtonByData: (cdata) ->
     # when status is empty or invalid --> message
-    console.log '___'
     console.log @getDataStatus(cdata)
-    console.log '___'
     switch @getDataStatus(cdata)
       when "empty"
         return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
