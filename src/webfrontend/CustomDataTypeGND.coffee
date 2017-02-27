@@ -47,7 +47,7 @@ class CustomDataTypeGND extends CustomDataType
   #######################################################################
   # buttons, which open and close popover
   __renderEditorInputPopover: (data, cdata) ->
-    @__layout = new HorizontalLayout
+    layout = new HorizontalLayout
       left:
         content:
             new Buttonbar(
@@ -58,7 +58,7 @@ class CustomDataTypeGND extends CustomDataType
                       group: "groupA"
 
                       onClick: (ev, btn) =>
-                        @showEditPopover(btn, cdata, data)
+                        @showEditPopover(btn, cdata, layout)
 
                   new Button
                       text: ""
@@ -72,28 +72,31 @@ class CustomDataTypeGND extends CustomDataType
                         }
                         data[@name()] = cdata
                         # trigger form change
+                        @__updateResult(cdata, layout)
                         Events.trigger
                           node: @__layout
                           type: "editor-changed"
-                        @__updateGNDResult(cdata)
+                        Events.trigger
+                          node: layout
+                          type: "editor-changed"
               ]
             )
       center: {}
       right: {}
-    @__updateGNDResult(cdata)
-    @__layout
+    @__updateResult(cdata, layout)
+    layout
 
 
   #######################################################################
   # update result in Masterform
-  __updateGNDResult: (cdata) ->
+  __updateResult: (cdata, layout) ->
     btn = @__renderButtonByData(cdata)
-    @__layout.replace(btn, "right")
+    layout.replace(btn, "right")
 
 
   #######################################################################
   # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
-  __getInfoFromEntityFacts: (uri, tooltip, extendedInfo_xhr) ->
+  __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
     # extract gndID from uri
     gndID = uri
     gndID = gndID.split "/"
@@ -222,7 +225,7 @@ class CustomDataTypeGND extends CustomDataType
           gnd_searchtype.push 'SubjectHeading'
         gnd_searchtype = gnd_searchtype.join(',')
 
-      gnd_countSuggestions = cdata_form.getFieldsByName("gndSelectCountOfSuggestions")[0].getValue()
+      gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
       if gnd_searchterm.length == 0
           return
@@ -269,7 +272,7 @@ class CustomDataTypeGND extends CustomDataType
                     if that.getCustomMaskSettings().show_infopopup?.value
                       # if type is ready for infopopup
                       if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
-                        that.__getInfoFromEntityFacts(data[3][key], tooltip, extendedInfo_xhr)
+                        that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
                         new Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
 
@@ -304,33 +307,8 @@ class CustomDataTypeGND extends CustomDataType
 
           suggest_Menu.show()
       )
-      .fail (data, status, statusText) ->
-          CUI.debug 'FAIL', searchsuggest_xhr.getXHR(), searchsuggest_xhr.getResponseHeaders()
     ), delayMillisseconds
 
-
-  #######################################################################
-  # reset form
-  __resetGNDForm: (cdata, cdata_form) ->
-    # clear variables
-    cdata.conceptName = ''
-    cdata.conceptURI = ''
-
-    # reset type-select
-    cdata_form.getFieldsByName("gndSelectType")[0].setValue("DifferentiatedPerson")
-
-    # reset count of suggestions
-    cdata_form.getFieldsByName("gndSelectCountOfSuggestions")[0].setValue(20)
-
-    # reset searchbar
-    cdata_form.getFieldsByName("gndSearchBar")[0].setValue("")
-
-    # reset result name
-    cdata_form.getFieldsByName("conceptName")[0].storeValue("").displayValue()
-
-    # reset and hide result-uri-button
-    cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText("")
-    cdata_form.getFieldsByName("conceptURI")[0].hide()
 
 
   #######################################################################
@@ -350,18 +328,20 @@ class CustomDataTypeGND extends CustomDataType
 
   #######################################################################
   # show popover and fill it with the form-elements
-  showEditPopover: (btn, cdata, data) ->
+  showEditPopover: (btn, cdata, layout) ->
 
     # init xhr-object to abort running xhrs
     searchsuggest_xhr = { "xhr" : undefined }
+
     # set default value for count of suggestions
-    cdata.gndSelectCountOfSuggestions = 20
+    cdata.countOfSuggestions = 20
+
     cdata_form = new Form
       data: cdata
       fields: @__getEditorFields(cdata)
       onDataChanged: =>
-        @__updateGNDResult(cdata)
-        @__setEditorFieldStatus(cdata, @__layout)
+        @__updateResult(cdata, layout)
+        @__setEditorFieldStatus(cdata, layout)
         @__updateSuggestionsMenu(cdata, cdata_form,suggest_Menu, searchsuggest_xhr)
     .start()
 
@@ -377,26 +357,8 @@ class CustomDataTypeGND extends CustomDataType
       pane:
         # titel of popovers
         header_left: new LocaLabel(loca_key: "custom.data.type.gnd.edit.modal.title")
-        # "save"-button
-        footer_right: new Button
-            text: "Übernehmen"
-            onClick: =>
-              # put data to savedata
-              data.gnd = {
-                conceptName : cdata.conceptName
-                conceptURI : cdata.conceptURI
-              }
-              # close popup
-              @popover.destroy()
-        # "reset"-button
-        footer_left: new Button
-            text: "Zurücksetzen"
-            onClick: =>
-              @__resetGNDForm(cdata, cdata_form)
-              @__updateGNDResult(cdata)
         content: cdata_form
     .show()
-    console.log @popover
 
 
   #######################################################################
@@ -492,7 +454,7 @@ class CustomDataTypeGND extends CustomDataType
             text: '100 Vorschläge'
         )
       ]
-      name: 'gndSelectCountOfSuggestions'
+      name: 'countOfSuggestions'
     }
     {
       type: Input
@@ -545,36 +507,32 @@ class CustomDataTypeGND extends CustomDataType
           nameCheck = if cdata.conceptName then cdata.conceptName.trim() else undefined
 
           if uriCheck and nameCheck
-            console.debug "getDataStatus: OK "
             return "ok"
 
           if cdata.conceptURI.trim() == '' and cdata.conceptName.trim() == ''
-            console.debug "getDataStatus: empty"
             return "empty"
 
-          console.debug "getDataStatus returns invalid"
           return "invalid"
         else
           cdata = {
                 conceptName : ''
                 conceptURI : ''
             }
-          console.debug "getDataStatus: empty"
           return "empty"
     else
       cdata = {
             conceptName : ''
             conceptURI : ''
         }
-      console.debug "getDataStatus: empty"
       return "empty"
 
 
   #######################################################################
   # renders the "result" in original form (outside popover)
   __renderButtonByData: (cdata) ->
+
     # when status is empty or invalid --> message
-    console.log @getDataStatus(cdata)
+
     switch @getDataStatus(cdata)
       when "empty"
         return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
@@ -588,7 +546,7 @@ class CustomDataTypeGND extends CustomDataType
 
     tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
 
-    # output Button with Name of picked GND-Entry and Url to the Deutsche Nationalbibliothek
+    # output Button with Name of picked Entry and Url to the Source
     new ButtonHref
       appearance: "link"
       href: cdata.conceptURI
@@ -604,11 +562,14 @@ class CustomDataTypeGND extends CustomDataType
   # is called, when record is being saved by user
   getSaveData: (data, save_data, opts) ->
     cdata = data[@name()] or data._template?[@name()]
+
     switch @getDataStatus(cdata)
       when "invalid"
         throw InvalidSaveDataException
+
       when "empty"
         save_data[@name()] = null
+
       when "ok"
         save_data[@name()] =
           conceptName: cdata.conceptName.trim()
