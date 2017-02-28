@@ -102,7 +102,7 @@ class CustomDataTypeGND extends CustomDataType
     gndID = gndID.split "/"
     gndID = gndID.pop()
     # download infos from entityfacts
-    if extendedInfo_xhr != undefined
+    if extendedInfo_xhr.xhr != undefined
       # abort eventually running request
       extendedInfo_xhr.abort()
     # start new request
