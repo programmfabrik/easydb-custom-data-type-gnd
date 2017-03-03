@@ -561,6 +561,13 @@ class CustomDataTypeGND extends CustomDataType
   #######################################################################
   # is called, when record is being saved by user
   getSaveData: (data, save_data, opts) ->
+    if opts.demo_data
+        # return demo data here
+        return {
+            conceptName : ''
+            conceptURI : ''
+        }
+
     cdata = data[@name()] or data._template?[@name()]
 
     switch @getDataStatus(cdata)
