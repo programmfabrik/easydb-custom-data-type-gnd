@@ -1,12 +1,5 @@
-Session::getCustomDataTypes = ->
-  @getDefaults().server.custom_data_types or {}
+class CustomDataTypeGND extends CustomDataTypeWithCommons
 
-class CustomDataTypeGND extends CustomDataType
-
-  CUI.ready =>
-    style = DOM.element("style")
-    style.innerHTML = ".gndpopover { min-width:600px !important; } .gndInput .cui-button-visual, .gndSelect .cui-button-visual { width: 100%; } .gndSelect > div { width: 100%; }"
-    document.head.appendChild(style)
 
   #######################################################################
   # return name of plugin
@@ -19,80 +12,6 @@ class CustomDataTypeGND extends CustomDataType
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.gnd.name")
 
-  #######################################################################
-  # check if field is empty
-  # needed for editor-table-view
-  isEmpty: (data, top_level_data, opts) ->
-      if data[@name()]?.conceptName
-          false
-      else
-          true
-
-  #######################################################################
-  # handle editorinput
-  renderEditorInput: (data, top_level_data, opts) ->
-    # console.error @, data, top_level_data, opts, @name(), @fullName()
-    if not data[@name()]
-      cdata = {
-            conceptName : ''
-            conceptURI : ''
-        }
-      data[@name()] = cdata
-    else
-      cdata = data[@name()]
-
-    @__renderEditorInputPopover(data, cdata)
-
-
-  #######################################################################
-  # buttons, which open and close popover
-  __renderEditorInputPopover: (data, cdata) ->
-    layout = new HorizontalLayout
-      left:
-        content:
-            new Buttonbar(
-              buttons: [
-                  new Button
-                      text: ""
-                      icon: 'edit'
-                      group: "groupA"
-
-                      onClick: (ev, btn) =>
-                        @showEditPopover(btn, cdata, layout)
-
-                  new Button
-                      text: ""
-                      icon: 'trash'
-                      group: "groupA"
-                      onClick: (ev, btn) =>
-                        # delete data
-                        cdata = {
-                              conceptName : ''
-                              conceptURI : ''
-                        }
-                        data[@name()] = cdata
-                        # trigger form change
-                        @__updateResult(cdata, layout)
-                        Events.trigger
-                          node: @__layout
-                          type: "editor-changed"
-                        Events.trigger
-                          node: layout
-                          type: "editor-changed"
-              ]
-            )
-      center: {}
-      right: {}
-    @__updateResult(cdata, layout)
-    layout
-
-
-  #######################################################################
-  # update result in Masterform
-  __updateResult: (cdata, layout) ->
-    btn = @__renderButtonByData(cdata)
-    layout.replace(btn, "right")
-
 
   #######################################################################
   # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
@@ -101,7 +20,7 @@ class CustomDataTypeGND extends CustomDataType
     gndID = uri
     gndID = gndID.split "/"
     gndID = gndID.pop()
-    # download infos from entityfacts
+    # download infos
     if extendedInfo_xhr.xhr != undefined
       # abort eventually running request
       extendedInfo_xhr.abort()
@@ -209,7 +128,7 @@ class CustomDataTypeGND extends CustomDataType
     delayMillisseconds = 200
 
     setTimeout ( ->
-      gnd_searchterm = cdata_form.getFieldsByName("gndSearchBar")[0].getValue()
+      gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
 
       gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
       # if "search-all-types", search all allowed types
@@ -225,6 +144,14 @@ class CustomDataTypeGND extends CustomDataType
           gnd_searchtype.push 'SubjectHeading'
         gnd_searchtype = gnd_searchtype.join(',')
 
+      # if only a "subclass" is active
+      subclass = that.getCustomSchemaSettings().exact_types?.value
+      subclassQuery = ''
+      #console.log subclass
+      #if subclass != undefined
+        #if subclass != 'ALLE' && subclass != 'Alle durchsuchen'
+          #subclassQuery = '&exact_type=' + subclass
+
       gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
       if gnd_searchterm.length == 0
@@ -236,12 +163,12 @@ class CustomDataTypeGND extends CustomDataType
           searchsuggest_xhr.xhr.abort()
 
       # start new request
-      searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + '&count=' + gnd_countSuggestions)
+      searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
       searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
           CUI.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
           # init xhr for tooltipcontent
-          extendedInfo_xhr = undefined
+          extendedInfo_xhr = { "xhr" : undefined }
           # create new menu with suggestions
           menu_items = []
           for suggestion, key in data[1]
@@ -289,7 +216,7 @@ class CustomDataTypeGND extends CustomDataType
               cdata_form.getFieldsByName("conceptURI")[0].show()
 
               # clear searchbar
-              cdata_form.getFieldsByName("gndSearchBar")[0].setValue('')
+              cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
               # hide suggest-menu
               suggest_Menu.hide()
               @
@@ -308,57 +235,6 @@ class CustomDataTypeGND extends CustomDataType
           suggest_Menu.show()
       )
     ), delayMillisseconds
-
-
-
-  #######################################################################
-  # if something in form is in/valid, set this status to masterform
-  __setEditorFieldStatus: (cdata, element) ->
-    switch @getDataStatus(cdata)
-      when "invalid"
-        element.addClass("cui-input-invalid")
-      else
-        element.removeClass("cui-input-invalid")
-
-    Events.trigger
-      node: element
-      type: "editor-changed"
-
-    @
-
-  #######################################################################
-  # show popover and fill it with the form-elements
-  showEditPopover: (btn, cdata, layout) ->
-
-    # init xhr-object to abort running xhrs
-    searchsuggest_xhr = { "xhr" : undefined }
-
-    # set default value for count of suggestions
-    cdata.countOfSuggestions = 20
-
-    cdata_form = new Form
-      data: cdata
-      fields: @__getEditorFields(cdata)
-      onDataChanged: =>
-        @__updateResult(cdata, layout)
-        @__setEditorFieldStatus(cdata, layout)
-        @__updateSuggestionsMenu(cdata, cdata_form,suggest_Menu, searchsuggest_xhr)
-    .start()
-
-    # init suggestmenu
-    suggest_Menu = new Menu
-        element : cdata_form.getFieldsByName("gndSearchBar")[0]
-        use_element_width_as_min_width: true
-
-    @popover = new Popover
-      element: btn
-      placement: "wn"
-      class: "gndpopover"
-      pane:
-        # titel of popovers
-        header_left: new LocaLabel(loca_key: "custom.data.type.gnd.edit.modal.title")
-        content: cdata_form
-    .show()
 
 
   #######################################################################
@@ -428,12 +304,12 @@ class CustomDataTypeGND extends CustomDataType
           label: $$('custom.data.type.gnd.modal.form.text.type')
       options: dropDownSearchOptions
       name: 'gndSelectType'
-      class: 'gndSelect'
+      class: 'commonPlugin_Select'
     }
     {
       type: Select
       undo_and_changed_support: false
-      class: 'gndSelect'
+      class: 'commonPlugin_Select'
       form:
           label: $$('custom.data.type.gnd.modal.form.text.count')
       options: [
@@ -462,8 +338,8 @@ class CustomDataTypeGND extends CustomDataType
       form:
           label: $$("custom.data.type.gnd.modal.form.text.searchbar")
       placeholder: $$("custom.data.type.gnd.modal.form.text.searchbar.placeholder")
-      name: "gndSearchBar"
-      class: 'gndInput'
+      name: "searchbarInput"
+      class: 'commonPlugin_Input'
     }
     {
       form:
@@ -486,45 +362,6 @@ class CustomDataTypeGND extends CustomDataType
           _this.hide()
     }
     ]
-
-  #######################################################################
-  # renders details-output of record
-  renderDetailOutput: (data, top_level_data, opts) ->
-    @__renderButtonByData(data[@name()])
-
-
-  #######################################################################
-  # checks the form and returns status
-  getDataStatus: (cdata) ->
-    if (cdata)
-        if cdata.conceptURI and cdata.conceptName
-
-          uriCheck = ///^
-            http://d-nb.info/gnd/
-            (1|1[01])\d{7}[0-9X]|[47]\d{6}-\d|[1-9]\d{0,7}-[0-9X]|3\d{7}[0-9X]
-            ///.test(cdata.conceptURI)
-
-          nameCheck = if cdata.conceptName then cdata.conceptName.trim() else undefined
-
-          if uriCheck and nameCheck
-            return "ok"
-
-          if cdata.conceptURI.trim() == '' and cdata.conceptName.trim() == ''
-            return "empty"
-
-          return "invalid"
-        else
-          cdata = {
-                conceptName : ''
-                conceptURI : ''
-            }
-          return "empty"
-    else
-      cdata = {
-            conceptName : ''
-            conceptURI : ''
-        }
-      return "empty"
 
 
   #######################################################################
@@ -557,30 +394,6 @@ class CustomDataTypeGND extends CustomDataType
       text: cdata.conceptName
     .DOM
 
-
-  #######################################################################
-  # is called, when record is being saved by user
-  getSaveData: (data, save_data, opts) ->
-    if opts.demo_data
-        # return demo data here
-        return {
-            conceptName : ''
-            conceptURI : ''
-        }
-
-    cdata = data[@name()] or data._template?[@name()]
-
-    switch @getDataStatus(cdata)
-      when "invalid"
-        throw InvalidSaveDataException
-
-      when "empty"
-        save_data[@name()] = null
-
-      when "ok"
-        save_data[@name()] =
-          conceptName: cdata.conceptName.trim()
-          conceptURI: cdata.conceptURI.trim()
 
 
   #######################################################################
