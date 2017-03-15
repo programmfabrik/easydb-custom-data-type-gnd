@@ -147,10 +147,10 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       # if only a "subclass" is active
       subclass = that.getCustomSchemaSettings().exact_types?.value
       subclassQuery = ''
-      #console.log subclass
-      #if subclass != undefined
-        #if subclass != 'ALLE' && subclass != 'Alle durchsuchen'
-          #subclassQuery = '&exact_type=' + subclass
+
+      if subclass != undefined
+        if subclass != 'ALLE'
+          subclassQuery = '&exact_type=' + subclass
 
       gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
@@ -398,30 +398,37 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   #######################################################################
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
-  renderCustomDataOptionsInDatamodel: (custom_settings) ->
-    labelText = '';
+  getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
+    tags = []
+
+    console.log custom_settings
 
     if custom_settings.add_differentiatedpersons?.value
-      labelText += "✓ Personen \n"
+      tags.push "✓ Personen"
     else
-      labelText += "✘ Personen \n"
+      tags.push "✘ Personen"
 
     if custom_settings.add_coorporates?.value
-      labelText += "✓ Körperschaften \n"
+      tags.push "✓ Körperschaften"
     else
-      labelText += "✘ Körperschaften \n"
+      tags.push "✘ Körperschaften"
 
     if custom_settings.add_geographicplaces?.value
-      labelText += "✓ Orte \n"
+      tags.push "✓ Orte"
     else
-      labelText += "✘ Orte \n"
+      tags.push "✘ Orte"
 
     if custom_settings.add_subjects?.value
-      labelText += "✓ Schlagwörter \n"
+      tags.push "✓ Schlagwörter"
     else
-      labelText += "✘ Schlagwörter \n"
+      tags.push "✘ Schlagwörter"
 
-    new Label(multiline: true, text: labelText)
+    if custom_settings.exact_types?.value
+      tags.push "✓ Exakter Typ: " + custom_settings.exact_types?.value
+    else
+      tags.push "✘ Exakter Typ"
+
+    tags
 
 
 CustomDataType.register(CustomDataTypeGND)
