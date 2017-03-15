@@ -11,6 +11,7 @@ As defined in `CustomDataTypeGND.config.yml` this datatype can be configured:
 ### Schema options
 
 * which entity types are offered for search
+* which exact type is offered
 
 ### Mask options
 
