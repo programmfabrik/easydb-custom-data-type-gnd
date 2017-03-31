@@ -16,6 +16,7 @@
 
 # have to use l10n2json from running docker container, so it
 # is slightly complicated to launch the command
+
 L10N2JSON = docker exec -t -i easydb-server /usr/bin/env LD_LIBRARY_PATH=/easydb-5/lib /easydb-5/bin/l10n2json
 
 # Make does not provide a lowercase function on all platforms, so fake it
@@ -43,6 +44,12 @@ clean:
 	@rm -f build-stamp-l10n
 	@rm -rf build/
 	@rm -rf test/*.spec.coffee
+
+google_csv:
+	chmod u+w $(L10N_FILES)
+	curl --silent -o - "https://docs.google.com/spreadsheets/u/1/d/$(L10N_GOOGLE_KEY)/export?format=csv&id=$(L10N_GOOGLE_KEY)&gid=$(L10N_GOOGLE_GID)" | sed -e 's/[[:space:]]*$$//' > $(L10N_FILES)
+	chmod a-w $(L10N_FILES)
+	$(MAKE) build-stamp-l10n
 
 build-stamp-l10n: $(L10N_FILES) $(CULTURES_CSV)
 	@mkdir -p build/webfrontend/l10n
