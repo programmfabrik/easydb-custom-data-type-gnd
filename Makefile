@@ -12,7 +12,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
-	CustomDataTypeLink.config.yml
+	CustomDataTypeGND.config.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
 	src/webfrontend/CustomDataTypeGND.coffee
