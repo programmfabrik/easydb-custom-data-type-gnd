@@ -5,8 +5,8 @@ plugin:
     api-version:
       require: 1
   webfrontend:
-    url: build/webfrontend/custom-data-type-gnd.js
-    l10n: build/webfrontend/l10n/
+    url: custom-data-type-gnd.js
+    l10n: l10n/
 custom_types:
   gnd:
     elasticsearch:
