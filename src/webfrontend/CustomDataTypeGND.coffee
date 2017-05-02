@@ -1,6 +1,5 @@
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
-
   #######################################################################
   # return name of plugin
   getCustomDataTypeName: ->
