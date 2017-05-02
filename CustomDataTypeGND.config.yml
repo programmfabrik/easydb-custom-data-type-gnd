@@ -47,6 +47,40 @@ custom_types:
                 type: string
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
+          conceptURI:
+            type: string
+            index: no
+            fields:
+              exact:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_exact_analyzer
+              folded:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_folded_analyzer
+              fulltext:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_fulltext_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              phrase:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_phrase_index_analyzer
+                search_analyzer: ez_text_fulltext_search_analyzer
+              sort:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: sort_de-DE
+              suggest:
+                type: string
+                term_vector: with_positions_offsets
+                index_analyzer: ez_text_suggest_analyzer
+              token:
+                type: string
+                term_vector: with_positions_offsets
+                analyzer: ez_text_token_analyzer
     config:
       schema:
         - name: add_differentiatedpersons
@@ -65,6 +99,11 @@ custom_types:
           parameters:
             value:
               type: bool
+        - name: exact_types
+          parameters:
+            value:
+              type: select
+              options: ["ALLE","SubjectHeadingSensoStricto","HistoricSingleEventOrEra","GroupOfPersons","CharactersOrMorphemes","MeansOfTransportWithIndividual_name","FictiveTerm","NomenclatureInBiologyOrChemistry","ProductNameOrBrandName","SoftwareProduct","Language","EthnographicName","MeansOfTransportWithIndividualName","ReligiousTerritory","NaturalGeographicUnit","TerritorialCorporateBodyOrAdministrativeUnit","FictivePlace","BuildingOrMemorial","Country","AdministrativeUnit","ExtraterrestrialTerritory","MemberState","WayBorderOrLine","NameOfSmallGeographicUnitLyingWithinAnotherGeographicUnit","FictiveCorporateBody","OrganOfCorporateBody","ProjectOrProgram","Pseudonym","LiteraryOrLegendaryCharacter","Spirits","RoyalOrMemberOfARoyalHouse","CollectivePseudonym","Gods"]
       mask:
         - name: show_infopopup
           parameters:
