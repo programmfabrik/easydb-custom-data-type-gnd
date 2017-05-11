@@ -1,6 +1,6 @@
 # easydb-custom-data-type-gnd
 
-This is a plugin for [easyDB 5](http://5.easydb.de/) with Custom Data Type `CustomDataTypeGND` for references to entities of the [Integrated Authority File (GND)](https://en.wikipedia.org/wiki/Integrated_Authority_File).
+This is a plugin for [easyDB 5](http://5.easydb.de/) with Custom Data Type `CustomDataTypeGND` for references to entities (only Differentiated Persons, Cooperates, Subject Headings, Place or geographic name) of the [Integrated Authority File (GND)](https://en.wikipedia.org/wiki/Integrated_Authority_File).
 
 The Plugins uses <http://ws.gbv.de/suggest/gnd/> for the autocomplete-suggestions and [EntityFacts API](<http://www.dnb.de/DE/Wir/Projekte/Abgeschlossen/entityFacts.html>) from Deutsche Nationalbibliothek for additional informations about GND entities.
 
