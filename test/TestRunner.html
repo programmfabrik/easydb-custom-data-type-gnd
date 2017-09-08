@@ -49,10 +49,10 @@
 
       // create some content to attach plugin to
 	  var layer = new CUI.Layer();
-      CUI.DOM.prepend(document.body, layer.DOM);
+      CUI.dom.prepend(document.body, layer.DOM);
 
       var label = new Label({ text: 'Hello, World!' });
-      CUI.DOM.prepend(layer.DOM, label.DOM);
+      CUI.dom.prepend(layer.DOM, label.DOM);
 
       // include plugin afterwards
       var script = document.createElement("script");
@@ -84,7 +84,7 @@
 		};
 
         var layout = gndDataType.renderEditorInput(gndData);
-        CUI.DOM.prepend(layer.DOM, layout.DOM);
+        CUI.dom.prepend(layer.DOM, layout.DOM);
       };
       document.body.appendChild(script);
     });

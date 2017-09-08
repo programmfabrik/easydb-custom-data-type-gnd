@@ -1454,12 +1454,12 @@ CUI = (function() {
             return;
           }
           i = 0;
-          ref1 = CUI.DOM.matchSelector(document.documentElement, ".cui-debug-node-copyable");
+          ref1 = CUI.dom.matchSelector(document.documentElement, ".cui-debug-node-copyable");
           for (l = 0, len2 = ref1.length; l < len2; l++) {
             node = ref1[l];
             node_copy = node.cloneNode(true);
             node.parentNode.appendChild(node_copy);
-            CUI.DOM.insertAfter(node, node_copy);
+            CUI.dom.insertAfter(node, node_copy);
             node_copy.classList.add("cui-demo-node-copy");
             console.debug("Node copied. Original:", node.parentNode, node, "Copy:", node_copy);
             i++;
@@ -1543,9 +1543,9 @@ CUI.ready((function(_this) {
         smartypants: false
       });
     }
-    nodes = CUI.DOM.htmlToNodes("<!-- CUI.CUI --><a style='display: none;'></a><!-- /CUI.CUI -->");
+    nodes = CUI.dom.htmlToNodes("<!-- CUI.CUI --><a style='display: none;'></a><!-- /CUI.CUI -->");
     CUI.__downloadDataElement = nodes[1];
-    return CUI.DOM.append(document.body, nodes);
+    return CUI.dom.append(document.body, nodes);
   };
 })(this));
 
@@ -1669,7 +1669,7 @@ CUI.jQueryCompat = (function() {
       return nodes;
     }
     if (isString(input)) {
-      nodes = CUI.DOM.matchSelector(document.documentElement, input);
+      nodes = CUI.dom.matchSelector(document.documentElement, input);
       if (nodes.length === 0) {
         return CUI.jQueryCompat.__noopNode();
       } else if (nodes.length === 1) {
@@ -1704,7 +1704,7 @@ CUI.jQueryCompat = (function() {
 
   jQueryCompat.__noopNode = function() {
     var j, key, len, node, ref;
-    node = CUI.DOM.element("DIV");
+    node = CUI.dom.element("DIV");
     Object.defineProperty(node, "0", {
       enumerable: true,
       get: (function(_this) {
@@ -1787,11 +1787,11 @@ CUI.jQueryCompat = (function() {
       return function(style, value) {
         CUI.jQueryCompat.__warn("css", node, style);
         if (CUI.isPlainObject(style)) {
-          return CUI.DOM.setStyle(node, style);
+          return CUI.dom.setStyle(node, style);
         } else if (value === void 0) {
-          return CUI.DOM.getComputedStyle(node)[style];
+          return CUI.dom.getComputedStyle(node)[style];
         } else {
-          return CUI.DOM.setStyleOne(node, style, value);
+          return CUI.dom.setStyleOne(node, style, value);
         }
       };
     })(this);
@@ -1811,7 +1811,7 @@ CUI.jQueryCompat = (function() {
       node.remove = (function(_this) {
         return function() {
           CUI.jQueryCompat.__warn("remove", node);
-          return CUI.DOM.remove(node);
+          return CUI.dom.remove(node);
         };
       })(this);
     }
@@ -1840,7 +1840,7 @@ CUI.jQueryCompat = (function() {
     })(this);
     node.closest = (function(_this) {
       return function(selector) {
-        return CUI.jQueryCompat(CUI.DOM.closest(node, selector));
+        return CUI.jQueryCompat(CUI.dom.closest(node, selector));
       };
     })(this);
     node.outerHeight = (function(_this) {
@@ -1849,9 +1849,9 @@ CUI.jQueryCompat = (function() {
           includeMargin = false;
         }
         if (includeMargin) {
-          return CUI.DOM.getDimensions(node).marginBoxHeight;
+          return CUI.dom.getDimensions(node).marginBoxHeight;
         } else {
-          return CUI.DOM.getDimensions(node).borderBoxHeight;
+          return CUI.dom.getDimensions(node).borderBoxHeight;
         }
       };
     })(this);
@@ -1861,23 +1861,23 @@ CUI.jQueryCompat = (function() {
           includeMargin = false;
         }
         if (includeMargin) {
-          return CUI.DOM.getDimensions(node).marginBoxWidth;
+          return CUI.dom.getDimensions(node).marginBoxWidth;
         } else {
-          return CUI.DOM.getDimensions(node).borderBoxWidth;
+          return CUI.dom.getDimensions(node).borderBoxWidth;
         }
       };
     })(this);
     node.rect = (function(_this) {
       return function() {
         CUI.jQueryCompat.__warn("rect", node);
-        return CUI.DOM.getRect(node);
+        return CUI.dom.getRect(node);
       };
     })(this);
     node.offset = (function(_this) {
       return function() {
         var rect;
         CUI.jQueryCompat.__warn("offset", node);
-        rect = CUI.DOM.getRect(node);
+        rect = CUI.dom.getRect(node);
         return {
           top: rect.top,
           left: rect.left
@@ -1891,7 +1891,7 @@ CUI.jQueryCompat = (function() {
           check = true;
         }
         CUI.jQueryCompat.__warn("cssInt", node);
-        s = CUI.DOM.getComputedStyle(node)[prop];
+        s = CUI.dom.getComputedStyle(node)[prop];
         if (s === void 0 || s === "") {
           return 0;
         }
@@ -1911,7 +1911,7 @@ CUI.jQueryCompat = (function() {
           check = true;
         }
         CUI.jQueryCompat.__warn("cssFloat", node);
-        s = CUI.DOM.getComputedStyle(node)[prop];
+        s = CUI.dom.getComputedStyle(node)[prop];
         if (s === void 0 || s === "") {
           return 0;
         }
@@ -1930,7 +1930,7 @@ CUI.jQueryCompat = (function() {
         includeMargin = false;
       }
       CUI.jQueryCompat.__warn("cssEdgeSpace", node);
-      dim = CUI.DOM.getDimensions(node);
+      dim = CUI.dom.getDimensions(node);
       keys = ["border", "padding"];
       if (includeMargin) {
         keys.push("margin");
@@ -1944,10 +1944,10 @@ CUI.jQueryCompat = (function() {
       return value;
     };
     node.hide = function() {
-      return CUI.DOM.hideElement(node);
+      return CUI.dom.hideElement(node);
     };
     node.show = function() {
-      return CUI.DOM.showElement(node);
+      return CUI.dom.showElement(node);
     };
     node.html = function(value) {
       CUI.jQueryCompat.__warn("html", node, value);
@@ -1970,48 +1970,48 @@ CUI.jQueryCompat = (function() {
     }
     node.replaceWith = function(new_node) {
       CUI.jQueryCompat.__warn("replaceWith", node, new_node);
-      return CUI.DOM.replaceWith(node, new_node);
+      return CUI.dom.replaceWith(node, new_node);
     };
     node.empty = function() {
       CUI.jQueryCompat.__warn("empty", node);
-      return CUI.DOM.empty(node);
+      return CUI.dom.empty(node);
     };
     node.append = function() {
       var content, more_content;
       content = arguments[0], more_content = 2 <= arguments.length ? slice.call(arguments, 1) : [];
       CUI.jQueryCompat.__warn("append", node, content);
       if (isString(content) && content.trim().startsWith("<") && content.indexOf(">") > -1) {
-        console.error("jQueryCompat.append: Unable to append HTML. Use CUI.DOM.htmlToNodes(...). Possible HTML: ", content);
+        console.error("jQueryCompat.append: Unable to append HTML. Use CUI.dom.htmlToNodes(...). Possible HTML: ", content);
       }
-      CUI.DOM.append(node, content);
+      CUI.dom.append(node, content);
       if (more_content.length > 0) {
         console.warn("jQueryCompat.append: Multiple parameters are deprecated.", {
           more_content: more_content
         });
-        CUI.DOM.append(node, more_content);
+        CUI.dom.append(node, more_content);
       }
       return node;
     };
     node.prepend = function(content) {
       CUI.jQueryCompat.__warn("prepend", node, content);
-      return CUI.DOM.prepend(node, content);
+      return CUI.dom.prepend(node, content);
     };
     node.appendTo = function(node_appendTo) {
       CUI.jQueryCompat.__warn("appendTo", node, node_appendTo);
-      CUI.DOM.append(node_appendTo, node);
+      CUI.dom.append(node_appendTo, node);
       return node;
     };
     node.prependTo = function(node_prependTo) {
       CUI.jQueryCompat.__warn("prependTo", node, node_prependTo);
-      CUI.DOM.prepend(node_prependTo, node);
+      CUI.dom.prepend(node_prependTo, node);
       return node;
     };
     node.parents = function(selector) {
       CUI.jQueryCompat.__warn("parents", node, selector);
-      return CUI.jQueryCompat(CUI.DOM.parents(node, selector));
+      return CUI.jQueryCompat(CUI.dom.parents(node, selector));
     };
     node.removeAttr = function(attr) {
-      return CUI.DOM.removeAttribute(node, attr);
+      return CUI.dom.removeAttribute(node, attr);
     };
     if ((ref2 = node.nodeName) === "DIV") {
       node.width = function(value) {
@@ -2025,51 +2025,51 @@ CUI.jQueryCompat = (function() {
     }
     node.removeClass = function(cls) {
       CUI.jQueryCompat.__warn("removeClass", node);
-      return CUI.DOM.removeClass(node, cls);
+      return CUI.dom.removeClass(node, cls);
     };
     node.addClass = function(cls) {
       CUI.jQueryCompat.__warn("addClass", node, cls);
-      return CUI.DOM.addClass(node, cls);
+      return CUI.dom.addClass(node, cls);
     };
     node.hasClass = function(cls) {
       CUI.jQueryCompat.__warn("hasClass", node, cls);
-      return CUI.DOM.hasClass(node, cls);
+      return CUI.dom.hasClass(node, cls);
     };
     node.is = function(selector) {
       CUI.jQueryCompat.__warn("is", node, selector);
-      return CUI.DOM.is(node, selector);
+      return CUI.dom.is(node, selector);
     };
     node.find = function(selector) {
       CUI.jQueryCompat.__warn("find", node);
-      return CUI.jQueryCompat(CUI.DOM.matchSelector(node, selector));
+      return CUI.jQueryCompat(CUI.dom.matchSelector(node, selector));
     };
     node.before = function(node_before) {
-      return CUI.DOM.insertBefore(node, node_before);
+      return CUI.dom.insertBefore(node, node_before);
     };
     node.after = function(node_after) {
-      return CUI.DOM.insertAfter(node, node_after);
+      return CUI.dom.insertAfter(node, node_after);
     };
     node.attr = function(prop, value) {
       CUI.jQueryCompat.__warn("attr|prop", node, prop, value);
       if (CUI.isPlainObject(prop)) {
-        return CUI.DOM.setAttributeMap(node, prop);
+        return CUI.dom.setAttributeMap(node, prop);
       } else if (value === void 0) {
-        return CUI.DOM.getAttribute(node, prop);
+        return CUI.dom.getAttribute(node, prop);
       } else {
-        return CUI.DOM.setAttribute(node, prop, value);
+        return CUI.dom.setAttribute(node, prop, value);
       }
     };
     node.relativePosition = function() {
-      return CUI.DOM.getRelativePosition(node);
+      return CUI.dom.getRelativePosition(node);
     };
     node.prop = node.attr;
     node.pf_hide = function() {
       CUI.jQueryCompat.__warn("pf_hide", node);
-      return CUI.DOM.hideElement(node);
+      return CUI.dom.hideElement(node);
     };
     node.pf_show = function() {
       CUI.jQueryCompat.__warn("pf_show", node);
-      return CUI.DOM.showElement(node);
+      return CUI.dom.showElement(node);
     };
     node.detach = function() {
       CUI.jQueryCompat.__warn("detach", node);
@@ -2163,7 +2163,7 @@ $element = function(tagName, cls, attrs, no_tables) {
     }
     tagName = "div";
   }
-  node = CUI.DOM.element(tagName, attrs);
+  node = CUI.dom.element(tagName, attrs);
   return CUI.jQueryCompat.__wrapNode(node);
 };
 
@@ -3304,7 +3304,7 @@ CUI.DragDropSelect = (function(superClass) {
       element: {
         mandatory: true,
         check: function(v) {
-          return CUI.DOM.isNode(v);
+          return CUI.dom.isNode(v);
         }
       }
     });
@@ -3409,7 +3409,7 @@ CUI.ready((function(_this) {
             width: window.innerWidth
           };
         } else {
-          rect = CUI.DOM.getRect($el);
+          rect = CUI.dom.getRect($el);
         }
         scrollTop = 0;
         scrollLeft = 0;
@@ -3559,13 +3559,13 @@ CUI.Draggable = (function(superClass) {
 
   Draggable.prototype.destroy = function() {
     Draggable.__super__.destroy.call(this);
-    CUI.DOM.remove(globalDrag != null ? globalDrag.helperNode : void 0);
+    CUI.dom.remove(globalDrag != null ? globalDrag.helperNode : void 0);
     this.__cleanup();
     return this;
   };
 
   Draggable.prototype.init = function() {
-    assert(!this._helper_contain_element || CUI.DOM.closest(this._element, this._helper_contain_element), "new Draggable", "opts.helper_contain_element needs to be parent of opts.element", {
+    assert(!this._helper_contain_element || CUI.dom.closest(this._element, this._helper_contain_element), "new Draggable", "opts.helper_contain_element needs to be parent of opts.element", {
       opts: this.opts
     });
     DOM.addClass(this.element, "no-user-select");
@@ -3601,7 +3601,7 @@ CUI.Draggable = (function(superClass) {
               if (!DOM.isInDOM(target) || target_dim.clientWidth === 0 || target_dim.clientHeight === 0) {
                 return;
               }
-              if (CUI.DOM.closest(ev.getTarget(), "input,textarea,select")) {
+              if (CUI.dom.closest(ev.getTarget(), "input,textarea,select")) {
                 return;
               }
               $target = $(target);
@@ -3873,7 +3873,7 @@ CUI.Draggable = (function(superClass) {
       globalDrag.dragoverTarget = null;
     }
     globalDrag.$source.removeClass(this._dragClass);
-    CUI.DOM.remove(globalDrag.helperNode);
+    CUI.dom.remove(globalDrag.helperNode);
     return this;
   };
 
@@ -3899,7 +3899,7 @@ CUI.Draggable = (function(superClass) {
       h: globalDrag.helperNodeStart.height
     };
     if (this._helper_contain_element) {
-      dim_contain = CUI.DOM.getDimensions(this._helper_contain_element);
+      dim_contain = CUI.dom.getDimensions(this._helper_contain_element);
       Draggable.limitRect(pos, {
         min_x: dim_contain.viewportLeft + dim_contain.borderLeftWidth,
         max_x: dim_contain.viewportRight - dim_contain.borderRightWidth - globalDrag.helperNodeStart.marginHorizontal,
@@ -3924,7 +3924,7 @@ CUI.Draggable = (function(superClass) {
     if (typeof this._helper_set_pos === "function") {
       this._helper_set_pos(globalDrag, helper_pos);
     }
-    return CUI.DOM.setStyle(globalDrag.helperNode, {
+    return CUI.dom.setStyle(globalDrag.helperNode, {
       top: helper_pos.top,
       left: helper_pos.left
     });
@@ -3961,7 +3961,7 @@ CUI.Draggable = (function(superClass) {
       top: globalDrag.startCoordinates.pageY - offset.top,
       left: globalDrag.startCoordinates.pageX - offset.left
     };
-    CUI.DOM.setStyle(hn, {
+    CUI.dom.setStyle(hn, {
       position: "absolute",
       top: start.top,
       left: start.left,
@@ -3982,7 +3982,7 @@ CUI.Draggable = (function(superClass) {
     start.marginLeft = dim.marginLeft;
     start.marginVertical = dim.marginVertical;
     start.marginHorizontal = dim.marginHorizontal;
-    start.body_dim = CUI.DOM.getDimensions(document.body);
+    start.body_dim = CUI.dom.getDimensions(document.body);
     return globalDrag.helperNodeStart = start;
   };
 
@@ -4088,7 +4088,7 @@ CUI.Droppable = (function(superClass) {
             pos = info.dropTargetPos || "on";
             return CUI.alert({
               markdown: true,
-              text: "You dropped me **" + pos + "**: " + CUI.DOM.getAttribute(info.dropTarget, "class")
+              text: "You dropped me **" + pos + "**: " + CUI.dom.getAttribute(info.dropTarget, "class")
             });
           };
         })(this),
@@ -4138,7 +4138,7 @@ CUI.Droppable = (function(superClass) {
       assert(!this._selector || this._targetHelper, "new Droppable", "opts.dropHelper does only work without opts.selector or with opts.targetHelper and opts.selector. needs opts.selector to be set.", {
         opts: this.opts
       });
-      this.__dropHelper = CUI.DOM.element("DIV", {
+      this.__dropHelper = CUI.dom.element("DIV", {
         "class": "cui-droppable-drop-helper cui-debug-node-copyable"
       });
     }
@@ -4148,14 +4148,14 @@ CUI.Droppable = (function(superClass) {
     var el, i, len, ref;
     this.resetMargin();
     if (this.__selectedTarget) {
-      CUI.DOM.removeClass(this.__selectedTarget, this._hoverClass);
+      CUI.dom.removeClass(this.__selectedTarget, this._hoverClass);
       this.__selectedTarget = null;
     }
     if (this.__dropHelper) {
-      CUI.DOM.remove(this.__dropHelper);
+      CUI.dom.remove(this.__dropHelper);
     }
     if (this._targetHelper) {
-      ref = CUI.DOM.findElements(this._element, this._selector);
+      ref = CUI.dom.findElements(this._element, this._selector);
       for (i = 0, len = ref.length; i < len; i++) {
         el = ref[i];
         el.classList.remove("cui-droppable-target-helper");
@@ -4193,14 +4193,14 @@ CUI.Droppable = (function(superClass) {
 
   Droppable.prototype.syncDropHelper = function() {
     var dim, drop_helper_dim;
-    dim = CUI.DOM.getDimensions(this._element);
+    dim = CUI.dom.getDimensions(this._element);
     document.body.appendChild(this.__dropHelper);
-    CUI.DOM.setDimensions(this.__dropHelper, {
+    CUI.dom.setDimensions(this.__dropHelper, {
       contentBoxWidth: dim.borderBoxWidth,
       contentBoxHeight: dim.borderBoxHeight
     });
-    drop_helper_dim = CUI.DOM.getDimensions(this.__dropHelper);
-    return CUI.DOM.setStyle(this.__dropHelper, {
+    drop_helper_dim = CUI.dom.getDimensions(this.__dropHelper);
+    return CUI.dom.setStyle(this.__dropHelper, {
       position: "absolute",
       top: dim.viewportTop - drop_helper_dim.borderTopWidth - drop_helper_dim.marginTop,
       left: dim.viewportLeft - drop_helper_dim.borderLeftWidth - drop_helper_dim.marginLeft
@@ -4213,7 +4213,7 @@ CUI.Droppable = (function(superClass) {
     coord = getCoordinatesFromEvent(info.originalEvent);
     if (ev.getType() === "cui-dragleave") {
       new_target = info.originalEvent.getTarget();
-      if (CUI.DOM.closest(new_target, ".cui-drag-drop-select-droppable") !== this._element) {
+      if (CUI.dom.closest(new_target, ".cui-drag-drop-select-droppable") !== this._element) {
         this.removeHelper();
         return true;
       }
@@ -4238,10 +4238,10 @@ CUI.Droppable = (function(superClass) {
     if (this.__dropTarget === void 0) {
       last_dim = null;
       this.__axis = null;
-      ref = CUI.DOM.findElements(this._element, this._selector);
+      ref = CUI.dom.findElements(this._element, this._selector);
       for (i = 0, len = ref.length; i < len; i++) {
         el = ref[i];
-        dim = CUI.DOM.getDimensions(el);
+        dim = CUI.dom.getDimensions(el);
         if (last_dim && !this.__axis) {
           if (last_dim.viewportLeft === dim.viewportLeft) {
             this.__axis = "y";
@@ -4261,9 +4261,9 @@ CUI.Droppable = (function(superClass) {
       this.__dropTargetPos = null;
       this.__dropTarget = null;
     }
-    CUI.DOM.removeClass(this.__selectedTarget, this._hoverClass);
+    CUI.dom.removeClass(this.__selectedTarget, this._hoverClass);
     if (this._selector) {
-      this.__selectedTarget = CUI.DOM.closest(target, this._selector);
+      this.__selectedTarget = CUI.dom.closest(target, this._selector);
     } else {
       this.__selectedTarget = this._element;
     }
@@ -4278,7 +4278,7 @@ CUI.Droppable = (function(superClass) {
       this.__dropTarget = this.__selectedTarget;
       this.__dropTargetPos = null;
       if (this._selector || !this.__dropHelper) {
-        CUI.DOM.addClass(this.__selectedTarget, this._hoverClass);
+        CUI.dom.addClass(this.__selectedTarget, this._hoverClass);
       } else {
         this.syncDropHelper();
       }
@@ -4304,8 +4304,8 @@ CUI.Droppable = (function(superClass) {
       }
       return;
     }
-    CUI.DOM.remove(this.__dropHelper);
-    dim = CUI.DOM.getDimensions(this.__selectedTarget);
+    CUI.dom.remove(this.__dropHelper);
+    dim = CUI.dom.getDimensions(this.__selectedTarget);
     if ((this.__axis === "x" && coord.pageX > dim.viewportCenterLeft) || (this.__axis === "y" && coord.pageY > dim.viewportCenterTop)) {
       dropTargetPos = "after";
     } else {
@@ -4323,10 +4323,10 @@ CUI.Droppable = (function(superClass) {
 
     } else {
       this.resetMargin();
-      this.__saveZoneDims = [CUI.DOM.getDimensions(this.__selectedTarget)];
+      this.__saveZoneDims = [CUI.dom.getDimensions(this.__selectedTarget)];
       this.__selectedTarget.__target_helper_class = helper_cls;
       this.__selectedTarget.addClass(this.__selectedTarget.__target_helper_class);
-      this.__saveZoneDims.push(CUI.DOM.getDimensions(this.__selectedTarget));
+      this.__saveZoneDims.push(CUI.dom.getDimensions(this.__selectedTarget));
       this.__resetMargin = this.__selectedTarget;
     }
   };
@@ -4431,7 +4431,7 @@ CUI.Lasso = (function(superClass) {
   };
 
   Lasso.prototype.start_drag = function(ev, $target, diff) {
-    if (!CUI.DOM.isInDOM(this.element[0])) {
+    if (!CUI.dom.isInDOM(this.element[0])) {
       throw "DragDropSelect: Creating lasso failed, element is not in DOM.";
     }
     globalDrag.lasso = $div(this._lassoClass + " cui-debug-node-copyable");
@@ -4568,7 +4568,7 @@ CUI.Sortable = (function(superClass) {
     return this.mergeOpt("selector", {
       "default": function(target, node) {
         var els;
-        els = CUI.DOM.elementsUntil(target, null, node);
+        els = CUI.dom.elementsUntil(target, null, node);
         if (!els) {
           return null;
         }
@@ -4607,12 +4607,12 @@ CUI.Sortable = (function(superClass) {
     }
     if (source_idx < dest_idx) {
       globalDrag.noClickHandlerKill = true;
-      CUI.DOM.insertAfter($dest, $source);
+      CUI.dom.insertAfter($dest, $source);
     } else if (source_idx > dest_idx) {
       globalDrag.noClickHandlerKill = true;
-      CUI.DOM.insertBefore($dest, $source);
+      CUI.dom.insertBefore($dest, $source);
     }
-    CUI.DOM.syncAnimatedClone(this.element);
+    CUI.dom.syncAnimatedClone(this.element);
     return this;
   };
 
@@ -4620,7 +4620,7 @@ CUI.Sortable = (function(superClass) {
     globalDrag.sort_source = this.__findClosestSon(globalDrag.$source);
     globalDrag.sort_source.classList.add("cui-sortable-placeholder");
     globalDrag.start_idx = this.get_child_number(globalDrag.sort_source);
-    return CUI.DOM.initAnimatedClone(this.element);
+    return CUI.dom.initAnimatedClone(this.element);
   };
 
   Sortable.prototype.getSourceCloneForHelper = function() {
@@ -4629,7 +4629,7 @@ CUI.Sortable = (function(superClass) {
 
   Sortable.prototype.__findClosestSon = function($target) {
     var parents;
-    parents = CUI.DOM.parentsUntil($target, null, this.element);
+    parents = CUI.dom.parentsUntil($target, null, this.element);
     if (parents[parents.length - 1] === window) {
       return null;
     }
@@ -4658,7 +4658,7 @@ CUI.Sortable = (function(superClass) {
   Sortable.prototype.end_drag = function(ev) {
     var curr_idx;
     globalDrag.sort_source.classList.remove("cui-sortable-placeholder");
-    CUI.DOM.removeAnimatedClone(this.element);
+    CUI.dom.removeAnimatedClone(this.element);
     curr_idx = this.get_child_number(globalDrag.sort_source);
     if (ev.getType() === "mouseup") {
       globalDrag.helperNode.remove();
@@ -4751,12 +4751,12 @@ CUI.Movable = (function(superClass) {
     if (!isEmpty(pos.h)) {
       setCss.marginBoxHeight = pos.h;
     }
-    CUI.DOM.setDimensions(this.element[0], setCss);
+    CUI.dom.setDimensions(this.element[0], setCss);
     return typeof this._onPositioned === "function" ? this._onPositioned(pos) : void 0;
   };
 
   Movable.prototype.init_drag = function(ev, $target) {
-    if (CUI.DOM.closest(ev.getTarget(), ".cui-resizable-handle")) {
+    if (CUI.dom.closest(ev.getTarget(), ".cui-resizable-handle")) {
       return;
     }
     return Movable.__super__.init_drag.call(this, ev, $target);
@@ -4764,7 +4764,7 @@ CUI.Movable = (function(superClass) {
 
   Movable.prototype.before_drag = function() {
     var dim;
-    dim = CUI.DOM.getDimensions(this.element[0]);
+    dim = CUI.dom.getDimensions(this.element[0]);
     this.start = {
       x: dim.left || 0,
       y: dim.top || 0,
@@ -4852,7 +4852,7 @@ Resizable = (function(superClass) {
     results = [];
     for (i = 0, len = ref.length; i < len; i++) {
       d = ref[i];
-      results.push(this.element.append(CUI.DOM.element("DIV", {
+      results.push(this.element.append(CUI.dom.element("DIV", {
         "cui-drag-drop-select-resizable": d,
         "class": "cui-resizable-handle cui-resizable-handle-" + d
       })));
@@ -5666,7 +5666,7 @@ CUI.Listener = (function(superClass) {
     } else {
       this.__types = this._type;
     }
-    this.__node = CUI.DOM.getNode(this._node);
+    this.__node = CUI.dom.getNode(this._node);
     ref = this.__types;
     for (i = 0, len = ref.length; i < len; i++) {
       type = ref[i];
@@ -6115,7 +6115,7 @@ CUI.MouseIsDownListener = (function(superClass) {
     if (this.__mousedown_event.isImmediatePropagationStopped() || ((ref = this.__last_triggered) != null ? ref.isNextPrevented() : void 0)) {
       return;
     }
-    if (!CUI.DOM.isInDOM(this.__mousedown_event.getNode())) {
+    if (!CUI.dom.isInDOM(this.__mousedown_event.getNode())) {
       this.__reset();
       return;
     }
@@ -6236,7 +6236,7 @@ CUI.Events = (function(superClass) {
   Events.getActiveListeners = function() {
     var el, j, len, listeners, ref;
     listeners = this.__listeners.slice(0);
-    ref = CUI.DOM.matchSelector(document, "[cui-events-listener-element]");
+    ref = CUI.dom.matchSelector(document, "[cui-events-listener-element]");
     for (j = 0, len = ref.length; j < len; j++) {
       el = ref[j];
       listeners.push.apply(listeners, DOM.data(el, "listeners"));
@@ -6708,21 +6708,21 @@ CUI.DOM = (function(superClass) {
 
   DOM.prototype.registerDOMElement = function(_dom) {
     this.DOM = _dom;
-    CUI.DOM.addClass(this.DOM, this.getDOMElementClasses());
-    CUI.DOM.setAttribute(this.DOM, "id", "cui-dom-element-" + this.getUniqueId());
+    CUI.dom.addClass(this.DOM, this.getDOMElementClasses());
+    CUI.dom.setAttribute(this.DOM, "id", "cui-dom-element-" + this.getUniqueId());
     if (this._class) {
-      CUI.DOM.addClass(this.DOM, this._class);
+      CUI.dom.addClass(this.DOM, this._class);
     }
-    CUI.DOM.setElement(this.DOM, this);
+    CUI.dom.setElement(this.DOM, this);
     return this;
   };
 
   DOM.prototype.unregisterDOMElement = function(DOM1) {
     this.DOM = DOM1;
     CUI.removeClass(this.DOM, this.getDOMElementClasses());
-    CUI.DOM.removeAttribute(this.DOM, "id");
+    CUI.dom.removeAttribute(this.DOM, "id");
     if (this._class) {
-      CUI.DOM.removeClass(this.DOM, this._class);
+      CUI.dom.removeClass(this.DOM, this._class);
     }
     DOM.removeData(this.DOM, "element");
     return this;
@@ -6739,19 +6739,19 @@ CUI.DOM = (function(superClass) {
   DOM.prototype.addClass = function(cls) {
     assert(arguments.length === 1, "DOM.addClass", "Only one parameter allowed.");
     this.assertDOMElement("addClass");
-    return CUI.DOM.addClass(this.DOM, cls);
+    return CUI.dom.addClass(this.DOM, cls);
   };
 
   DOM.prototype.removeClass = function(cls) {
     assert(arguments.length === 1, "DOM.removeClass", "Only one parameter allowed.");
     this.assertDOMElement("removeClass");
-    return CUI.DOM.removeClass(this.DOM, cls);
+    return CUI.dom.removeClass(this.DOM, cls);
   };
 
   DOM.prototype.hasClass = function(cls) {
     assert(arguments.length === 1, "DOM.hasClass", "Only one parameter allowed.");
     this.assertDOMElement("hasClass");
-    return CUI.DOM.hasClass(this.DOM, cls);
+    return CUI.dom.hasClass(this.DOM, cls);
   };
 
   DOM.prototype.isDestroyed = function(key) {
@@ -7098,7 +7098,7 @@ CUI.DOM = (function(superClass) {
     }
     for (key in map) {
       value = map[key];
-      CUI.DOM.setAttribute(node, key, value);
+      CUI.dom.setAttribute(node, key, value);
     }
     return node;
   };
@@ -7147,7 +7147,7 @@ CUI.DOM = (function(superClass) {
       idx = 0;
       len = content.length;
       while (idx < len) {
-        CUI.DOM.append(node, content[idx], append);
+        CUI.dom.append(node, content[idx], append);
         if (len > content.length) {
 
         } else {
@@ -7296,10 +7296,10 @@ CUI.DOM = (function(superClass) {
     if (ignore_margin == null) {
       ignore_margin = false;
     }
-    assert(isElement(node), "CUI.DOM.getRelativePosition", "Node needs to HTMLElement.", {
+    assert(isElement(node), "CUI.dom.getRelativePosition", "Node needs to HTMLElement.", {
       node: node
     });
-    dim_node = CUI.DOM.getDimensions(node);
+    dim_node = CUI.dom.getDimensions(node);
     parent = node.parentNode;
     if (ignore_margin) {
       margin_key_top = "viewportTop";
@@ -7309,7 +7309,7 @@ CUI.DOM = (function(superClass) {
       margin_key_left = "viewportLeftMargin";
     }
     while (true) {
-      dim = CUI.DOM.getDimensions(parent);
+      dim = CUI.dom.getDimensions(parent);
       if (parent === document.body || parent === document.documentElement || parent === document) {
         offset = {
           parent: parent,
@@ -7341,18 +7341,18 @@ CUI.DOM = (function(superClass) {
     clone = node.cloneNode(true);
     node.__clone = clone;
     if (selector) {
-      watched_nodes = CUI.DOM.matchSelector(node, selector);
-      clone.__watched_nodes = CUI.DOM.matchSelector(clone, selector);
+      watched_nodes = CUI.dom.matchSelector(node, selector);
+      clone.__watched_nodes = CUI.dom.matchSelector(clone, selector);
     } else {
-      watched_nodes = CUI.DOM.children(node);
-      clone.__watched_nodes = CUI.DOM.children(clone);
+      watched_nodes = CUI.dom.children(node);
+      clone.__watched_nodes = CUI.dom.children(clone);
     }
-    offset = CUI.DOM.getRelativeOffset(node);
-    if (!CUI.DOM.isPositioned(offset.parent)) {
+    offset = CUI.dom.getRelativeOffset(node);
+    if (!CUI.dom.isPositioned(offset.parent)) {
       node.__parent_saved_position = offset.parent.style.position;
       offset.parent.style.position = "relative";
     }
-    CUI.DOM.setStyle(clone, {
+    CUI.dom.setStyle(clone, {
       position: "absolute",
       "pointer-events": "none",
       top: offset.top,
@@ -7360,19 +7360,19 @@ CUI.DOM = (function(superClass) {
     });
     node.style.opacity = "0";
     dim = DOM.getDimensions(node);
-    CUI.DOM.addClass(clone, "cui-dom-animated-clone cui-debug-node-copyable");
-    div = CUI.DOM.element("div", {
+    CUI.dom.addClass(clone, "cui-dom-animated-clone cui-debug-node-copyable");
+    div = CUI.dom.element("div", {
       style: "position: absolute; opacity: 0; width: 1px; height: 1px;"
     });
     clone.appendChild(div);
-    CUI.DOM.insertAfter(node, clone);
-    CUI.DOM.setDimension(clone, "marginBoxWidth", dim.marginBoxWidth);
-    CUI.DOM.setDimension(clone, "marginBoxHeight", dim.marginBoxHeight);
+    CUI.dom.insertAfter(node, clone);
+    CUI.dom.setDimension(clone, "marginBoxWidth", dim.marginBoxWidth);
+    CUI.dom.setDimension(clone, "marginBoxHeight", dim.marginBoxHeight);
     ref = clone.__watched_nodes;
     for (idx = i = 0, len1 = ref.length; i < len1; idx = ++i) {
       clone_child = ref[idx];
       clone_child.__watched_node = watched_nodes[idx];
-      CUI.DOM.setStyle(clone_child, {
+      CUI.dom.setStyle(clone_child, {
         position: "absolute",
         margin: 0
       });
@@ -7411,7 +7411,7 @@ CUI.DOM = (function(superClass) {
       clone_child = ref[idx];
       child = clone_child.__watched_node;
       offset_new = this.getRelativeOffset(child, node, true);
-      CUI.DOM.setStyle(clone_child, {
+      CUI.dom.setStyle(clone_child, {
         top: offset_new.top,
         left: offset_new.left
       });
@@ -7498,7 +7498,7 @@ CUI.DOM = (function(superClass) {
     dfr = new CUI.Deferred();
     check_in_dom = (function(_this) {
       return function() {
-        if (!CUI.DOM.isInDOM(node)) {
+        if (!CUI.dom.isInDOM(node)) {
           dfr.resolve();
           return;
         }
@@ -7524,7 +7524,7 @@ CUI.DOM = (function(superClass) {
       }
     });
     node = DOM.getNode(opts.node);
-    if (CUI.DOM.isInDOM(node)) {
+    if (CUI.dom.isInDOM(node)) {
       return CUI.resolvedPromise(true);
     }
     ref = ["-webkit-", "-moz-", "-ms-", "-o-", ""];
@@ -7637,7 +7637,7 @@ CUI.DOM = (function(superClass) {
   };
 
   DOM.insertChildAtPosition = function(node, node_insert, pos) {
-    assert(isInteger(pos) && pos >= 0 && pos <= node.children.length, "CUI.DOM.insertAtPosition", "Unable to insert node at position #" + pos + ".", {
+    assert(isInteger(pos) && pos >= 0 && pos <= node.children.length, "CUI.dom.insertAtPosition", "Unable to insert node at position #" + pos + ".", {
       node: node,
       node_insert: node_insert,
       pos: pos
@@ -7683,7 +7683,7 @@ CUI.DOM = (function(superClass) {
     if (!node) {
       return null;
     }
-    return node[CUI.DOM.matchFunc](selector);
+    return node[CUI.dom.matchFunc](selector);
   };
 
   DOM.matchFunc = (function() {
@@ -7708,12 +7708,12 @@ CUI.DOM = (function(superClass) {
     if (trySelf == null) {
       trySelf = false;
     }
-    assert(docElem instanceof HTMLElement || docElem === document, "CUI.DOM.matchSelector", "docElem needs to be instanceof HTMLElement or document.", {
+    assert(docElem instanceof HTMLElement || docElem === document, "CUI.dom.matchSelector", "docElem needs to be instanceof HTMLElement or document.", {
       docElem: docElem
     });
     list = docElem.querySelectorAll(sel);
     if (trySelf && list.length === 0) {
-      if (docElem[CUI.DOM.matchFunc](sel)) {
+      if (docElem[CUI.dom.matchFunc](sel)) {
         list = [docElem];
       } else {
         list = [];
@@ -7724,7 +7724,7 @@ CUI.DOM = (function(superClass) {
 
   DOM.elementsUntil = function(docElem, selector, untilDocElem) {
     var path, testDocElem;
-    assert(docElem instanceof HTMLElement || docElem === document || docElem === window, "CUI.DOM.elementsUntil", "docElem needs to be instanceof HTMLElement.", {
+    assert(docElem instanceof HTMLElement || docElem === document || docElem === window, "CUI.dom.elementsUntil", "docElem needs to be instanceof HTMLElement.", {
       docElem: docElem,
       selector: selector,
       untilDocElem: untilDocElem
@@ -7742,7 +7742,7 @@ CUI.DOM = (function(superClass) {
           return path;
         }
       }
-      testDocElem = CUI.DOM.parent(testDocElem);
+      testDocElem = CUI.dom.parent(testDocElem);
       if (testDocElem === null) {
         if (selector) {
           return null;
@@ -7786,7 +7786,7 @@ CUI.DOM = (function(superClass) {
     if (untilDocElem == null) {
       untilDocElem = document.documentElement;
     }
-    parentElem = CUI.DOM.parent(docElem);
+    parentElem = CUI.dom.parent(docElem);
     if (!parentElem) {
       return [];
     }
@@ -7799,7 +7799,7 @@ CUI.DOM = (function(superClass) {
 
   DOM.parents = function(docElem, selector) {
     var i, len1, parent, parents, path;
-    assert(docElem instanceof HTMLElement || docElem === document || docElem === window, "CUI.DOM.parents", "element needs to be instanceof HTMLElement, document, or window.", {
+    assert(docElem instanceof HTMLElement || docElem === document || docElem === window, "CUI.dom.parents", "element needs to be instanceof HTMLElement, document, or window.", {
       element: docElem
     });
     path = this.parentsUntil(docElem);
@@ -7820,7 +7820,7 @@ CUI.DOM = (function(superClass) {
     if (!docElem) {
       return null;
     }
-    assert(docElem instanceof HTMLElement, "CUI.DOM.isInDOM", "docElem needs to be instanceof HTMLElement.", {
+    assert(docElem instanceof HTMLElement, "CUI.dom.isInDOM", "docElem needs to be instanceof HTMLElement.", {
       docElem: docElem
     });
     if (this.closestUntil(docElem, document.documentElement)) {
@@ -7831,7 +7831,7 @@ CUI.DOM = (function(superClass) {
   };
 
   DOM.replaceWith = function(node, new_node) {
-    assert(node instanceof HTMLElement && new_node instanceof HTMLElement, "CUI.DOM.replaceWidth", "nodes need to be instanceof HTMLElement.", {
+    assert(node instanceof HTMLElement && new_node instanceof HTMLElement, "CUI.dom.replaceWidth", "nodes need to be instanceof HTMLElement.", {
       node: node,
       newNode: node
     });
@@ -7851,7 +7851,7 @@ CUI.DOM = (function(superClass) {
     if (append == null) {
       append = "px";
     }
-    assert(docElem instanceof HTMLElement, "CUI.DOM.setStyle", "docElem needs to be instanceof HTMLElement.", {
+    assert(docElem instanceof HTMLElement, "CUI.dom.setStyle", "docElem needs to be instanceof HTMLElement.", {
       docElem: docElem
     });
     for (k in style) {
@@ -7888,10 +7888,10 @@ CUI.DOM = (function(superClass) {
 
   DOM.getRelativePosition = function(docElem) {
     var dim;
-    assert(docElem instanceof HTMLElement, "CUI.DOM.getRelativePosition", "docElem needs to be instanceof HTMLElement.", {
+    assert(docElem instanceof HTMLElement, "CUI.dom.getRelativePosition", "docElem needs to be instanceof HTMLElement.", {
       docElem: docElem
     });
-    dim = CUI.DOM.getDimensions(docElem);
+    dim = CUI.dom.getDimensions(docElem);
     return {
       top: dim.offsetTopScrolled,
       left: dim.offsetLeftScrolled
@@ -8170,7 +8170,7 @@ CUI.DOM = (function(superClass) {
   };
 
   DOM.isContentBox = function(docElem) {
-    return CUI.DOM.getBoxSizing() === "content-box";
+    return CUI.dom.getBoxSizing() === "content-box";
   };
 
   DOM.hideElement = function(docElem) {
@@ -8186,7 +8186,7 @@ CUI.DOM = (function(superClass) {
 
   DOM.removeChildren = function(docElem, filter) {
     var child, i, len1, ref;
-    assert(docElem instanceof HTMLElement, "CUI.DOM.removeChildren", "element needs to be instance of HTMLElement", {
+    assert(docElem instanceof HTMLElement, "CUI.dom.removeChildren", "element needs to be instance of HTMLElement", {
       element: docElem
     });
     ref = this.children(docElem, filter);
@@ -8237,7 +8237,7 @@ CUI.DOM = (function(superClass) {
     } else if (CUI.isArray(arguments[0])) {
       arr = arguments[0];
     } else {
-      console.error("CUI.DOM.debugRect: Argument Error.");
+      console.error("CUI.dom.debugRect: Argument Error.");
       return;
     }
     top = arr[0], left = arr[1], bottom = arr[2], right = arr[3];
@@ -8265,7 +8265,7 @@ CUI.DOM = (function(superClass) {
     if (!docElem) {
       return null;
     }
-    parents = CUI.DOM.parentsUntil(docElem);
+    parents = CUI.dom.parentsUntil(docElem);
     dim = null;
     measure = (function(_this) {
       return function() {
@@ -8464,7 +8464,7 @@ CUI.CSSLoader = (function(superClass) {
   };
 
   CSSLoader.prototype.__getCSSNodes = function() {
-    return CUI.DOM.matchSelector(document.documentElement, "link[name=\"" + this.__cssName + "\"]");
+    return CUI.dom.matchSelector(document.documentElement, "link[name=\"" + this.__cssName + "\"]");
   };
 
   CSSLoader.prototype.getActiveTheme = function() {
@@ -8472,8 +8472,8 @@ CUI.CSSLoader = (function(superClass) {
     ref = this.__getCSSNodes();
     for (i = 0, len = ref.length; i < len; i++) {
       cssNode = ref[i];
-      if (!CUI.DOM.getAttribute(cssNode, "loading")) {
-        name = CUI.DOM.getAttribute(cssNode, "theme");
+      if (!CUI.dom.getAttribute(cssNode, "loading")) {
+        name = CUI.dom.getAttribute(cssNode, "theme");
         active_theme = this.__themes[name];
         break;
       }
@@ -8528,11 +8528,11 @@ CUI.CSSLoader = (function(superClass) {
     ref1 = this.__getCSSNodes();
     for (i = 0, len = ref1.length; i < len; i++) {
       oldCssNode = ref1[i];
-      same_theme = CUI.DOM.getAttribute(oldCssNode, "theme") === name;
-      same_url = CUI.DOM.getAttribute(oldCssNode, "href") === url;
-      is_loading = CUI.DOM.getAttribute(oldCssNode, "loading");
+      same_theme = CUI.dom.getAttribute(oldCssNode, "theme") === name;
+      same_url = CUI.dom.getAttribute(oldCssNode, "href") === url;
+      is_loading = CUI.dom.getAttribute(oldCssNode, "loading");
       if (is_loading) {
-        loader_deferred = CUI.DOM.data(oldCssNode, "css-loader-deferred");
+        loader_deferred = CUI.dom.data(oldCssNode, "css-loader-deferred");
         if (same_theme && same_url) {
           console.warn("CSSLoader.loadTheme:", name, ". Theme already loading, returning Promise.");
           return loader_deferred.promise();
@@ -8551,7 +8551,7 @@ CUI.CSSLoader = (function(superClass) {
       CUI.__ng__ = true;
     }
     dfr = new CUI.Deferred();
-    cssNode = CUI.DOM.element("LINK", {
+    cssNode = CUI.dom.element("LINK", {
       rel: "stylesheet",
       charset: "utf-8",
       name: this.__cssName,
@@ -8565,17 +8565,17 @@ CUI.CSSLoader = (function(superClass) {
     } else {
       css_href = url;
     }
-    CUI.DOM.data(cssNode, "css-loader-deferred", dfr);
+    CUI.dom.data(cssNode, "css-loader-deferred", dfr);
     dfr.always((function(_this) {
       return function() {
-        CUI.DOM.removeData(cssNode, "css-loader-deferred");
-        return CUI.DOM.removeAttribute(cssNode, "loading");
+        CUI.dom.removeData(cssNode, "css-loader-deferred");
+        return CUI.dom.removeAttribute(cssNode, "loading");
       };
     })(this));
     dfr.fail((function(_this) {
       return function(css_href) {
         console.error("CSSLoader: Loading failed, removing node.", css_href);
-        return CUI.DOM.remove(cssNode);
+        return CUI.dom.remove(cssNode);
       };
     })(this));
     Events.listen({
@@ -8604,12 +8604,12 @@ CUI.CSSLoader = (function(superClass) {
           for (k = 0, len2 = ref3.length; k < len2; k++) {
             css_node = ref3[k];
             if (css_node !== cssNode) {
-              console.warn("CSSLoader.loadTheme: Removing old css node:", CUI.DOM.getAttribute(css_node, "href"), "New Node is:", CUI.DOM.getAttribute(cssNode, "href"), "Is loading:", CUI.DOM.getAttribute(css_node, "loading"));
-              CUI.DOM.remove(css_node);
+              console.warn("CSSLoader.loadTheme: Removing old css node:", CUI.dom.getAttribute(css_node, "href"), "New Node is:", CUI.dom.getAttribute(cssNode, "href"), "Is loading:", CUI.dom.getAttribute(css_node, "loading"));
+              CUI.dom.remove(css_node);
               old_css_nodes.push(css_node);
             }
           }
-          CUI.DOM.setAttribute(document.body, "cui-theme", name);
+          CUI.dom.setAttribute(document.body, "cui-theme", name);
           console.info("CSSLoader.loadTheme: Loading went fine: ", url, "Removing the old CSS node: ", old_css_nodes);
           Events.trigger({
             type: "viewport-resize",
@@ -8656,10 +8656,10 @@ CUI.Template = (function(superClass) {
     if (this._class) {
       DOM.addClass(this.DOM, this._class);
     }
-    CUI.DOM.setElement(this.DOM, this);
+    CUI.dom.setElement(this.DOM, this);
     this.map = this.getElMap(this._map);
     if (!CUI.isEmptyObject(this.map)) {
-      CUI.DOM.addClass(this.DOM, "cui-template-empty");
+      CUI.dom.addClass(this.DOM, "cui-template-empty");
     }
     return;
   }
@@ -8688,7 +8688,7 @@ CUI.Template = (function(superClass) {
   Template.prototype.initFlexHandles = function() {
     var fh, fh_el, fh_name, i, len, ref;
     this.__flexHandles = {};
-    ref = CUI.DOM.matchSelector(this.DOM, "[cui-flex-handle]");
+    ref = CUI.dom.matchSelector(this.DOM, "[cui-flex-handle]");
     for (i = 0, len = ref.length; i < len; i++) {
       fh_el = ref[i];
       fh = new FlexHandle({
@@ -8740,7 +8740,7 @@ CUI.Template = (function(superClass) {
       } else {
         sel = v;
       }
-      map_obj = CUI.DOM.matchSelector(this.DOM, sel, true);
+      map_obj = CUI.dom.matchSelector(this.DOM, sel, true);
       if (map_obj.length === 0) {
         report.push("* " + k + ": not found (" + sel + ")");
         misses++;
@@ -8918,7 +8918,7 @@ CUI.Template = (function(superClass) {
     }
     if (appends.length > 0) {
       CUI.DOM[fn](node, appends);
-      CUI.DOM.removeClass(this.DOM, "cui-template-empty");
+      CUI.dom.removeClass(this.DOM, "cui-template-empty");
     }
     return node;
   };
@@ -8959,7 +8959,7 @@ CUI.Template = (function(superClass) {
     } else {
       p = CUI.pathToScript + "/" + filename;
     }
-    div = CUI.DOM.element("DIV", {
+    div = CUI.dom.element("DIV", {
       style: "display:none;"
     });
     return new CUI.XHR({
@@ -8989,7 +8989,7 @@ CUI.Template = (function(superClass) {
       start_element = document.documentElement;
     }
     count = 0;
-    ref = CUI.DOM.matchSelector(start_element, ".cui-tmpl");
+    ref = CUI.dom.matchSelector(start_element, ".cui-tmpl");
     for (i = 0, len = ref.length; i < len; i++) {
       el = ref[i];
       ref1 = el.classList;
@@ -9002,7 +9002,7 @@ CUI.Template = (function(superClass) {
             continue;
           }
           Template.nodeByName[name] = el;
-          CUI.DOM.remove(el);
+          CUI.dom.remove(el);
           el.classList.remove("cui-tmpl");
           count = count + 1;
           break;
@@ -9028,17 +9028,17 @@ FlexHandle = (function(superClass) {
   function FlexHandle(opts1) {
     var c, children, i, idx, len;
     this.opts = opts1 != null ? opts1 : {};
-    this.addOptsFromAttr(CUI.DOM.getAttribute(this.opts.element, "cui-flex-handle"));
+    this.addOptsFromAttr(CUI.dom.getAttribute(this.opts.element, "cui-flex-handle"));
     FlexHandle.__super__.constructor.call(this, this.opts);
     this.__pane = null;
     children = this._element.parentNode.children;
     for (idx = i = 0, len = children.length; i < len; idx = ++i) {
       c = children[idx];
-      if (CUI.DOM.is(c, this._pane)) {
+      if (CUI.dom.is(c, this._pane)) {
         this.__pane = c;
         this.__pane_idx = idx;
       }
-      if (CUI.DOM.is(c, this._element)) {
+      if (CUI.dom.is(c, this._element)) {
         this.__element_idx = idx;
       }
     }
@@ -9060,8 +9060,8 @@ FlexHandle = (function(superClass) {
       opts: this.opts,
       children: children
     });
-    CUI.DOM.data(this.__pane, "flexHandle", this);
-    CUI.DOM.setAttribute(this.__pane, "flex-handled-pane", this._name);
+    CUI.dom.data(this.__pane, "flexHandle", this);
+    CUI.dom.setAttribute(this.__pane, "flex-handled-pane", this._name);
   }
 
   FlexHandle.prototype.readOpts = function() {
@@ -9313,7 +9313,7 @@ FlexHandle = (function(superClass) {
   };
 
   FlexHandle.prototype.__isAlive = function() {
-    if (this.isDestroyed() || !CUI.DOM.isInDOM(this._element)) {
+    if (this.isDestroyed() || !CUI.dom.isInDOM(this._element)) {
       return false;
     } else {
       return true;
@@ -9778,7 +9778,7 @@ CUI.Layout = (function(superClass) {
     this.addClass("cui-" + this.getMapPrefix());
     if (this._absolute) {
       this.addClass("cui-absolute");
-      assert((ref = CUI.DOM.getAttribute(this.DOM, "cui-absolute-container")) === "row" || ref === "column", "new Layout", "opts.absolute: template must include a cui-absolute-container attribute set to \"row\" or \"column\".");
+      assert((ref = CUI.dom.getAttribute(this.DOM, "cui-absolute-container")) === "row" || ref === "column", "new Layout", "opts.absolute: template must include a cui-absolute-container attribute set to \"row\" or \"column\".");
       DOM.waitForDOMInsert({
         node: this.DOM
       }).done((function(_this) {
@@ -9794,7 +9794,7 @@ CUI.Layout = (function(superClass) {
     } else {
       has_flex_handles = false;
     }
-    CUI.DOM.setAttribute(this.__layout.DOM, "has-flex-handles", (has_flex_handles ? true : false));
+    CUI.dom.setAttribute(this.__layout.DOM, "has-flex-handles", (has_flex_handles ? true : false));
     ref1 = this.__panes;
     fn = (function(_this) {
       return function(pn) {
@@ -9896,7 +9896,7 @@ CUI.Layout = (function(superClass) {
         fh_inst.close();
       }
       if (fh["class"]) {
-        CUI.DOM.addClass(fh_inst.getHandle(), fh["class"]);
+        CUI.dom.addClass(fh_inst.getHandle(), fh["class"]);
       }
     }
     if (opts["class"]) {
@@ -10005,7 +10005,7 @@ CUI.Layout = (function(superClass) {
     assert(isElement(layout), "Layout.setAbsolute", "layout needs to be HTMLElement", {
       layout: layout
     });
-    direction = CUI.DOM.getAttribute(layout, "cui-absolute-container");
+    direction = CUI.dom.getAttribute(layout, "cui-absolute-container");
     switch (direction) {
       case "row":
         rect_key = "marginBoxWidth";
@@ -10029,17 +10029,17 @@ CUI.Layout = (function(superClass) {
     }
     abs_values = values.join(",");
     check_value = DOM.getDimensions(layout)[rect_check_key] + "";
-    if (CUI.DOM.getAttribute(layout, "cui-absolute-values") === abs_values && CUI.DOM.getAttribute(layout, "cui-absolute-check-value") === check_value) {
+    if (CUI.dom.getAttribute(layout, "cui-absolute-values") === abs_values && CUI.dom.getAttribute(layout, "cui-absolute-check-value") === check_value) {
       return false;
     }
-    if (CUI.DOM.getAttribute(layout, "cui-absolute-check-value") !== check_value) {
-      CUI.DOM.setAttribute(layout, "cui-absolute-check-value", check_value);
+    if (CUI.dom.getAttribute(layout, "cui-absolute-check-value") !== check_value) {
+      CUI.dom.setAttribute(layout, "cui-absolute-check-value", check_value);
     }
-    if (CUI.DOM.getAttribute(layout, "cui-absolute-values") !== abs_values) {
-      CUI.DOM.setAttribute(layout, "cui-absolute-values", abs_values);
+    if (CUI.dom.getAttribute(layout, "cui-absolute-values") !== abs_values) {
+      CUI.dom.setAttribute(layout, "cui-absolute-values", abs_values);
       for (idx = j = 0, len1 = children.length; j < len1; idx = ++j) {
         child = children[idx];
-        set = CUI.DOM.getAttribute(child, "cui-absolute-set");
+        set = CUI.dom.getAttribute(child, "cui-absolute-set");
         if (!set) {
           continue;
         }
@@ -10422,7 +10422,7 @@ CUI.Layer = (function(superClass) {
     if (!this.isShown()) {
       return;
     }
-    dim_window = CUI.DOM.getDimensions(window);
+    dim_window = CUI.dom.getDimensions(window);
     get_pointer_direction = function(placement) {
       return {
         n: "s",
@@ -10441,7 +10441,7 @@ CUI.Layer = (function(superClass) {
       };
     })(this);
     if (this.__pointer) {
-      CUI.DOM.setStyle(this.__pointer, {
+      CUI.dom.setStyle(this.__pointer, {
         top: 0,
         left: 0,
         margin: ""
@@ -10449,7 +10449,7 @@ CUI.Layer = (function(superClass) {
       ref = ["w", "s", "e", "n"];
       for (i = 0, len = ref.length; i < len; i++) {
         direction = ref[i];
-        CUI.DOM.removeClass(this.__pointer, get_pointer_class(direction));
+        CUI.dom.removeClass(this.__pointer, get_pointer_class(direction));
       }
     }
     dim_pointer = {};
@@ -10458,9 +10458,9 @@ CUI.Layer = (function(superClass) {
       placement = ref1[j];
       pointer_direction = get_pointer_direction(placement);
       if (this.__pointer) {
-        CUI.DOM.addClass(this.__pointer, get_pointer_class(pointer_direction));
-        dim_pointer[placement] = CUI.DOM.getDimensions(this.__pointer);
-        CUI.DOM.removeClass(this.__pointer, get_pointer_class(pointer_direction));
+        CUI.dom.addClass(this.__pointer, get_pointer_class(pointer_direction));
+        dim_pointer[placement] = CUI.dom.getDimensions(this.__pointer);
+        CUI.dom.removeClass(this.__pointer, get_pointer_class(pointer_direction));
       } else {
         dim_pointer[placement] = {
           borderBoxWidth: 0,
@@ -10473,7 +10473,7 @@ CUI.Layer = (function(superClass) {
       }
       dim_pointer[placement].direction = pointer_direction;
     }
-    CUI.DOM.setStyle(this.__layer.DOM, {
+    CUI.dom.setStyle(this.__layer.DOM, {
       top: 0,
       left: 0,
       width: "",
@@ -10482,11 +10482,11 @@ CUI.Layer = (function(superClass) {
       "max-width": "",
       "max-height": ""
     });
-    dim_layer = CUI.DOM.getDimensions(this.__layer.DOM);
+    dim_layer = CUI.dom.getDimensions(this.__layer.DOM);
     allowed_placements = (this._placements || CUI.Layer.knownPlacements).slice(0);
     wanted_placement = this._placement || allowed_placements[0];
     if (this.__element) {
-      dim_element = CUI.DOM.getDimensions(this.__element);
+      dim_element = CUI.dom.getDimensions(this.__element);
     } else if (this._show_at_position) {
       dim_element = {
         viewportTop: this._show_at_position.top,
@@ -10824,9 +10824,9 @@ CUI.Layer = (function(superClass) {
           _this.__removeDebugDivs();
           _vp = vp_pl[placement];
           console.info("Layer: Placement", placement, _vp);
-          _this.__dbg_div1 = CUI.DOM.element("DIV");
-          _this.__dbg_div2 = CUI.DOM.element("DIV");
-          _this.__dbg_div3 = CUI.DOM.element("DIV");
+          _this.__dbg_div1 = CUI.dom.element("DIV");
+          _this.__dbg_div2 = CUI.dom.element("DIV");
+          _this.__dbg_div3 = CUI.dom.element("DIV");
           style1 = {
             position: "absolute",
             zIndex: 2,
@@ -10852,7 +10852,7 @@ CUI.Layer = (function(superClass) {
             fontSize: 40,
             color: "rgb(0,255,50)"
           };
-          span = CUI.DOM.element("SPAN");
+          span = CUI.dom.element("SPAN");
           span.textContent = placement;
           _this.__dbg_div2.appendChild(span);
           DOM.setStyle(_this.__dbg_div2, style2);
@@ -10911,7 +10911,7 @@ CUI.Layer = (function(superClass) {
     } else {
       minWidth = void 0;
     }
-    CUI.DOM.setStyle(this.__layer.DOM, {
+    CUI.dom.setStyle(this.__layer.DOM, {
       top: vp.layer_pos.top,
       left: vp.layer_pos.left,
       width: vp.layer_pos.width,
@@ -10920,12 +10920,12 @@ CUI.Layer = (function(superClass) {
       margin: 0
     });
     if (this.__pointer) {
-      CUI.DOM.setStyle(this.__pointer, {
+      CUI.dom.setStyle(this.__pointer, {
         top: vp.pointer_pos.top,
         left: vp.pointer_pos.left,
         margin: 0
       });
-      CUI.DOM.addClass(this.__pointer, get_pointer_class(vp.pointer_pos.direction));
+      CUI.dom.addClass(this.__pointer, get_pointer_class(vp.pointer_pos.direction));
     }
     if (this.__backdrop_crop) {
       DOM.setStyle(this.__backdrop_crop, {
@@ -10989,7 +10989,7 @@ CUI.Layer = (function(superClass) {
       })(this),
       call: (function(_this) {
         return function() {
-          if (_this.__element && !CUI.DOM.isInDOM(_this.__element)) {
+          if (_this.__element && !CUI.dom.isInDOM(_this.__element)) {
             _this.destroy();
             return;
           }
@@ -11046,7 +11046,7 @@ CUI.Layer = (function(superClass) {
       this.__element.removeClass("cui-layer-active");
     }
     this.__layer_root.DOM.detach();
-    CUI.DOM.setAttributeMap(this.__layer_root.DOM[0], {
+    CUI.dom.setAttributeMap(this.__layer_root.DOM[0], {
       "cui-layer-stack-number": null,
       "cui-layer-stack-count": null
     });
@@ -11070,11 +11070,11 @@ CUI.Layer = (function(superClass) {
 
   Layer.prototype.__updateLayerStackCounter = function() {
     var el, i, idx, layer_elements, len, total;
-    layer_elements = CUI.DOM.matchSelector(document.documentElement, "body > .cui-tmpl-layer-root");
+    layer_elements = CUI.dom.matchSelector(document.documentElement, "body > .cui-tmpl-layer-root");
     total = layer_elements.length;
     for (idx = i = 0, len = layer_elements.length; i < len; idx = ++i) {
       el = layer_elements[idx];
-      CUI.DOM.setAttributeMap(el, {
+      CUI.dom.setAttributeMap(el, {
         "cui-layer-stack-number": idx,
         "cui-layer-stack-count": total
       });
@@ -11098,7 +11098,7 @@ CUI.Layer = (function(superClass) {
     document.body.appendChild(this.__layer_root.DOM);
     if (this.__element) {
       this.__element.addClass("cui-layer-active");
-      ref = CUI.DOM.parentsScrollable(this.__element);
+      ref = CUI.dom.parentsScrollable(this.__element);
       for (i = 0, len = ref.length; i < len; i++) {
         scroll_parent = ref[i];
         Events.listen({
@@ -11115,7 +11115,7 @@ CUI.Layer = (function(superClass) {
       if (this._check_for_element) {
         this.__check_for_element = CUI.setInterval((function(_this) {
           return function() {
-            if (!CUI.DOM.isInDOM(_this.__element)) {
+            if (!CUI.dom.isInDOM(_this.__element)) {
               return _this.destroy();
             }
           };
@@ -11141,7 +11141,7 @@ CUI.Layer = (function(superClass) {
       node: this.__layer,
       call: (function(_this) {
         return function(ev) {
-          if (_this.__element && !CUI.DOM.isInDOM(_this.__element)) {
+          if (_this.__element && !CUI.dom.isInDOM(_this.__element)) {
             return;
           }
           _this.position();
@@ -11249,13 +11249,13 @@ CUI.ready(function() {
       layer_elements = DOM.findElements(document.body, "body > .cui-tmpl-layer-root");
       target = ev.getTarget();
       while (layer_element = layer_elements.pop()) {
-        if (!CUI.DOM.hasClass(layer_element, "cui-layer-backdrop-policy-click-thru")) {
+        if (!CUI.dom.hasClass(layer_element, "cui-layer-backdrop-policy-click-thru")) {
           return;
         }
-        if (CUI.DOM.closest(target, layer_element)) {
+        if (CUI.dom.closest(target, layer_element)) {
           return;
         }
-        layer = DOM.data(CUI.DOM.children(layer_element, ".cui-layer")[0], "element");
+        layer = DOM.data(CUI.dom.children(layer_element, ".cui-layer")[0], "element");
         layer.hide(ev);
       }
     }
@@ -11271,7 +11271,7 @@ CUI.ready(function() {
       }
       layer_elements = DOM.findElements(document.body, "body > .cui-tmpl-layer-root > .cui-layer");
       layer_element = layer_elements[layer_elements.length - 1];
-      element = CUI.DOM.closest(ev.getTarget(), "[tabindex],input,textarea");
+      element = CUI.dom.closest(ev.getTarget(), "[tabindex],input,textarea");
       if ((element && element !== layer_element) || !layer_element) {
         return;
       }
@@ -11491,7 +11491,7 @@ CUI.DataField = (function(superClass) {
   DataField.prototype.setFormDepth = function() {
     var path;
     path = this.getFormPath();
-    CUI.DOM.setAttribute(this.DOM, "cui-form-depth", path.length);
+    CUI.dom.setAttribute(this.DOM, "cui-form-depth", path.length);
     this.callOnOthers("setFormDepth");
     return this;
   };
@@ -12455,7 +12455,7 @@ CUI.Button = (function(superClass) {
             return;
           }
           if (!_this.__disabled && !CUI.__ng__) {
-            CUI.DOM.addClass(_this.DOM, CUI.defaults["class"].Button.defaults.pressed_css_class);
+            CUI.dom.addClass(_this.DOM, CUI.defaults["class"].Button.defaults.pressed_css_class);
           }
           ev.stopPropagation();
         };
@@ -13229,7 +13229,7 @@ CUI.Button = (function(superClass) {
   };
 
   Button.prototype.setTextMaxChars = function(max_chars) {
-    return CUI.DOM.setAttribute(this.getCenter().firstChild, "max-chars", max_chars);
+    return CUI.dom.setAttribute(this.getCenter().firstChild, "max-chars", max_chars);
   };
 
   Button.prototype.getText = function() {
@@ -13382,11 +13382,11 @@ Icon = (function(superClass) {
   };
 
   Icon.prototype.hide = function() {
-    return CUI.DOM.hideElement(this.DOM);
+    return CUI.dom.hideElement(this.DOM);
   };
 
   Icon.prototype.show = function() {
-    return CUI.DOM.showElement(this.DOM);
+    return CUI.dom.showElement(this.DOM);
   };
 
   Icon.prototype.icon_map = function() {
@@ -13601,7 +13601,7 @@ Buttonbar = (function(superClass) {
       for (idx = i = 0, len = ref.length; i < len; idx = ++i) {
         c = ref[idx];
         c.classList.remove("cui-first-visible-child");
-        if (CUI.DOM.isVisible(c)) {
+        if (CUI.dom.isVisible(c)) {
           count = count + 1;
         }
         if (count === 1) {
@@ -13615,7 +13615,7 @@ Buttonbar = (function(superClass) {
       }
     }
     visible = 0;
-    ref1 = CUI.DOM.children(this.__buttons);
+    ref1 = CUI.dom.children(this.__buttons);
     for (j = 0, len1 = ref1.length; j < len1; j++) {
       el = ref1[j];
       el.classList.remove("cui-first-visible-child");
@@ -13869,7 +13869,7 @@ CUI.Label = (function(superClass) {
     if (isEmpty(this.__currentText)) {
       this.empty("content");
     } else if (markdown) {
-      this.setContent(CUI.DOM.htmlToNodes(marked(this.__currentText)));
+      this.setContent(CUI.dom.htmlToNodes(marked(this.__currentText)));
     } else {
       this.setContent($text(this.__currentText));
     }
@@ -13920,7 +13920,7 @@ CUI.Label = (function(superClass) {
       overflow_button = new CUI.defaults["class"].Button(btn_opts);
       this.__overflow_button_div.append(overflow_button.DOM[0]);
       this.append(this.__overflow_button_div, "content");
-      CUI.DOM.waitForDOMInsert({
+      CUI.dom.waitForDOMInsert({
         node: this.DOM[0]
       }).done((function(_this) {
         return function() {
@@ -13943,10 +13943,10 @@ CUI.Label = (function(superClass) {
 
   Label.prototype.initOverflowSize = function() {
     var dim_btn, dim_content, dim_div;
-    CUI.DOM.setStyle(this.__overflow_content_div[0], {
+    CUI.dom.setStyle(this.__overflow_content_div[0], {
       height: ""
     });
-    CUI.DOM.setStyle(this.__label.map.content[0], {
+    CUI.dom.setStyle(this.__label.map.content[0], {
       height: "",
       maxHeight: ""
     });
@@ -13977,13 +13977,13 @@ CUI.Label = (function(superClass) {
     } else {
       content_height = this.__overflow_heights.content_hide;
     }
-    CUI.DOM.setDimensions(this.__overflow_content_div[0], {
+    CUI.dom.setDimensions(this.__overflow_content_div[0], {
       marginBoxHeight: content_height
     });
-    CUI.DOM.setDimensions(this.__label.map.content[0], {
+    CUI.dom.setDimensions(this.__label.map.content[0], {
       height: content_height + this.__overflow_heights.button
     });
-    CUI.DOM.setStyle(this.__label.map.content[0], {
+    CUI.dom.setStyle(this.__label.map.content[0], {
       maxHeight: content_height + this.__overflow_heights.button
     });
     Events.wait({
@@ -14504,7 +14504,7 @@ CUI.Console = (function(superClass) {
   function Console(opts) {
     this.opts = opts != null ? opts : {};
     Console.__super__.constructor.call(this, this.opts);
-    this.__console = CUI.DOM.element("DIV", {
+    this.__console = CUI.dom.element("DIV", {
       "class": "cui-console"
     });
     this.registerDOMElement(this.__console);
@@ -14882,7 +14882,7 @@ CUI.Pane = (function(superClass) {
       }
     });
     rect = this.DOM.rect();
-    vp = CUI.DOM.getDimensions(window);
+    vp = CUI.dom.getDimensions(window);
     this.__placeholderTmpl = new Template({
       name: "pane-fill-screen-placeholder"
     });
@@ -15477,10 +15477,10 @@ CUI.Tabs = (function(superClass) {
     header_dim = DOM.getDimensions(this.__header);
     if (header_dim.scrollWidth > header_dim.clientWidth) {
       this.__overflowBtn.show();
-      CUI.DOM.addClass(this.__pane_header.DOM, "cui-tabs-pane-header--overflow");
+      CUI.dom.addClass(this.__pane_header.DOM, "cui-tabs-pane-header--overflow");
     } else {
       this.__overflowBtn.hide();
-      CUI.DOM.removeClass(this.__pane_header.DOM, "cui-tabs-pane-header--overflow");
+      CUI.dom.removeClass(this.__pane_header.DOM, "cui-tabs-pane-header--overflow");
     }
     return this;
   };
@@ -15489,10 +15489,10 @@ CUI.Tabs = (function(superClass) {
     var btn, btn_dim, ref;
     btn = (ref = this.getActiveTab()) != null ? ref.getButton().DOM[0] : void 0;
     if (!btn) {
-      CUI.DOM.hideElement(this.__tabs_marker);
+      CUI.dom.hideElement(this.__tabs_marker);
       return;
     }
-    CUI.DOM.showElement(this.__tabs_marker);
+    CUI.dom.showElement(this.__tabs_marker);
     btn_dim = DOM.getDimensions(btn);
     DOM.setStyle(this.__tabs_marker, {
       left: btn_dim.offsetLeft,
@@ -15504,7 +15504,7 @@ CUI.Tabs = (function(superClass) {
   Tabs.prototype.init = function() {
     var i, idx, len, pane_key, ref, startScrollLeft, tab;
     Tabs.__super__.init.call(this);
-    this.__tabs_marker = CUI.DOM.element("DIV", {
+    this.__tabs_marker = CUI.dom.element("DIV", {
       "class": "cui-tabs-active-marker"
     });
     this.__tabs_bodies = new Template({
@@ -15542,9 +15542,9 @@ CUI.Tabs = (function(superClass) {
       call: (function(_this) {
         return function(ev) {
           var dim;
-          dim = CUI.DOM.getDimensions(_this.__header);
-          CUI.DOM.setClass(_this.__pane_header.DOM, "cui-tabs-pane-header--scroll-at-end", dim.horizontalScrollbarAtEnd);
-          return CUI.DOM.setClass(_this.__pane_header.DOM, "cui-tabs-pane-header--scroll-at-start", dim.horizontalScrollbarAtStart);
+          dim = CUI.dom.getDimensions(_this.__header);
+          CUI.dom.setClass(_this.__pane_header.DOM, "cui-tabs-pane-header--scroll-at-end", dim.horizontalScrollbarAtEnd);
+          return CUI.dom.setClass(_this.__pane_header.DOM, "cui-tabs-pane-header--scroll-at-start", dim.horizontalScrollbarAtStart);
         };
       })(this)
     });
@@ -17184,22 +17184,22 @@ CUI.ListView = (function(superClass) {
     outer = this.center()[0];
     outer.innerHTML = html.join("");
     this.grid = $(outer.firstChild);
-    this.quadrant = [CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-0")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-1")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-2")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-3")[0]];
+    this.quadrant = [CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-0")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-1")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-2")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-3")[0]];
     if (this._autoLayout) {
       this.quadrantRows = this.quadrant;
       if (this._autoLayout === 2) {
-        this.styleElement = CUI.DOM.matchSelector(outer, "style")[0];
+        this.styleElement = CUI.dom.matchSelector(outer, "style")[0];
       }
     } else {
-      this.quadrantRows = [CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-0 > table > tbody")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-1 > table > tbody")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-2 > table > tbody")[0], CUI.DOM.matchSelector(outer, ".cui-list-view-grid-quadrant-3 > table > tbody")[0]];
-      this.styleElement = CUI.DOM.matchSelector(outer, "style")[0];
+      this.quadrantRows = [CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-0 > table > tbody")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-1 > table > tbody")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-2 > table > tbody")[0], CUI.dom.matchSelector(outer, ".cui-list-view-grid-quadrant-3 > table > tbody")[0]];
+      this.styleElement = CUI.dom.matchSelector(outer, "style")[0];
     }
-    this.__fillRowQ3 = CUI.DOM.matchSelector(this.grid[0], ".cui-list-view-grid-fills-3")[0];
-    this.__topQuadrants = $(CUI.DOM.matchSelector(outer, ".cui-list-view-grid-inner-top")[0]);
-    this.__bottomQuadrants = $(CUI.DOM.matchSelector(outer, ".cui-list-view-grid-inner-bottom")[0]);
+    this.__fillRowQ3 = CUI.dom.matchSelector(this.grid[0], ".cui-list-view-grid-fills-3")[0];
+    this.__topQuadrants = $(CUI.dom.matchSelector(outer, ".cui-list-view-grid-inner-top")[0]);
+    this.__bottomQuadrants = $(CUI.dom.matchSelector(outer, ".cui-list-view-grid-inner-bottom")[0]);
     this.__fillCells = [];
     for (col = j = 0, ref = this.colsCount - 1; j <= ref; col = j += 1) {
-      this.__fillCells.push(CUI.DOM.matchSelector(outer, ".cui-list-view-grid-fill-col-" + col)[0]);
+      this.__fillCells.push(CUI.dom.matchSelector(outer, ".cui-list-view-grid-fill-col-" + col)[0]);
     }
     on_scroll = (function(_this) {
       return function() {
@@ -18302,14 +18302,14 @@ CUI.ListView = (function(superClass) {
     find_cells_and_rows = (function(_this) {
       return function(top) {
         var _cells, _col, _row, _rows, cell, len1, len2, m, n, row;
-        _cells = CUI.DOM.matchSelector(top, ".cui-list-view-grid-cell");
+        _cells = CUI.dom.matchSelector(top, ".cui-list-view-grid-cell");
         for (m = 0, len1 = _cells.length; m < len1; m++) {
           cell = _cells[m];
           _col = parseInt(cell.getAttribute("col"));
           _row = parseInt(cell.getAttribute("row"));
           _this.__cells[_row][_col] = $(cell);
         }
-        _rows = CUI.DOM.matchSelector(top, ".cui-list-view-grid-row[row]");
+        _rows = CUI.dom.matchSelector(top, ".cui-list-view-grid-row[row]");
         for (n = 0, len2 = _rows.length; n < len2; n++) {
           row = _rows[n];
           row_i = parseInt(row.getAttribute("row"));
@@ -18357,7 +18357,7 @@ CUI.ListView = (function(superClass) {
       }
       if (mode === "replace") {
         node = outer.firstChild;
-        CUI.DOM.replaceWith(row, node);
+        CUI.dom.replaceWith(row, node);
       }
     }
     if (this.fixedRowsCount > 0) {
@@ -20625,7 +20625,7 @@ ListViewColumn = (function(superClass) {
     this.__element = __element;
     this.addClass(this.getClass());
     if (this.__attrs) {
-      CUI.DOM.setAttributeMap(this.__element, this.__attrs);
+      CUI.dom.setAttributeMap(this.__element, this.__attrs);
     }
     if (typeof this._onSetElement === "function") {
       this._onSetElement(this);
@@ -20645,14 +20645,14 @@ ListViewColumn = (function(superClass) {
     if (!this.__element) {
       this.__cl += " " + cls;
     } else if (this.__element instanceof HTMLElement) {
-      CUI.DOM.addClass(this.__element, cls);
+      CUI.dom.addClass(this.__element, cls);
     }
     return this;
   };
 
   ListViewColumn.prototype.removeClass = function(cls) {
     if (this.__element instanceof HTMLElement) {
-      CUI.DOM.removeClass(this.__element, cls);
+      CUI.dom.removeClass(this.__element, cls);
     }
     return this;
   };
@@ -20996,7 +20996,7 @@ ListViewHoverTool = (function(superClass) {
       return false;
     }
     this.__hasMarker = false;
-    ref = CUI.DOM.matchSelector(document.documentElement, ".cui-list-view-tool:not(.cui-demo-node-copy)");
+    ref = CUI.dom.matchSelector(document.documentElement, ".cui-list-view-tool:not(.cui-demo-node-copy)");
     for (i = 0, len = ref.length; i < len; i++) {
       el = ref[i];
       el.remove();
@@ -23920,7 +23920,7 @@ FileUploadButton = (function(superClass) {
 
 CUI.ready((function(_this) {
   return function() {
-    return CUI.DOM.append(document.body, CUI.DOM.htmlToNodes("<!-- CUI.FileUploadButton --><form style=\"display:none;\"><input type=\"file\" id=\"cui-file-upload-button\"></input></form><!-- /CUI.FileUploadButton -->"));
+    return CUI.dom.append(document.body, CUI.dom.htmlToNodes("<!-- CUI.FileUploadButton --><form style=\"display:none;\"><input type=\"file\" id=\"cui-file-upload-button\"></input></form><!-- /CUI.FileUploadButton -->"));
   };
 })(this));
 // Generated by CoffeeScript 1.9.3
@@ -27999,13 +27999,13 @@ CUI.Options = (function(superClass) {
           cb = ref1[j];
           cb.start();
           if (this._sortable && cb.isActive()) {
-            el = CUI.DOM.element("DIV", {
+            el = CUI.dom.element("DIV", {
               "class": "cui-options-sortable-option"
             });
-            drag_handle = CUI.DOM.element("DIV", {
+            drag_handle = CUI.dom.element("DIV", {
               "class": "cui-options-sortable-drag-handle"
             });
-            drag_handle_inner = CUI.DOM.element("DIV", {
+            drag_handle_inner = CUI.dom.element("DIV", {
               "class": "cui-drag-handle-row"
             });
             drag_handle.appendChild(drag_handle_inner);
@@ -28813,7 +28813,7 @@ CUI.Form = (function(superClass) {
           } else {
             if (app.label) {
               if (isString(app.label) && CUI.__ng__) {
-                content = CUI.DOM.element("label", {
+                content = CUI.dom.element("label", {
                   "for": _field.getUniqueIdForLabel()
                 });
                 content.textContent = app.label;
@@ -28910,7 +28910,7 @@ CUI.Form = (function(superClass) {
       })(this)
     });
     this.getLayout().replace(this.table, "center");
-    CUI.DOM.setAttribute(this.table, "cui-form-depth", CUI.DOM.getAttribute(this.DOM, "cui-form-depth"));
+    CUI.dom.setAttribute(this.table, "cui-form-depth", CUI.dom.getAttribute(this.DOM, "cui-form-depth"));
     return this.table;
   };
 
@@ -30952,7 +30952,7 @@ CUI.DocumentBrowser = (function(superClass) {
     return node.loadContent().done((function(_this) {
       return function(content) {
         _this.__renderNode = node;
-        return _this.__layout.replace(CUI.DOM.htmlToNodes(marked(content, _this.__marked_opts)), "center");
+        return _this.__layout.replace(CUI.dom.htmlToNodes(marked(content, _this.__marked_opts)), "center");
       };
     })(this)).fail((function(_this) {
       return function() {
