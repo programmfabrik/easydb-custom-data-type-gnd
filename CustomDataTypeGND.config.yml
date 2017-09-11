@@ -19,32 +19,39 @@ custom_types:
             fields:
               exact:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_exact_analyzer
               folded:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_folded_analyzer
               fulltext:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: sort_de-DE
               suggest:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_suggest_analyzer
               token:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
           conceptURI:
@@ -53,32 +60,39 @@ custom_types:
             fields:
               exact:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_exact_analyzer
               folded:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_folded_analyzer
               fulltext:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: sort_de-DE
               suggest:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_suggest_analyzer
               token:
                 type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
     config:
