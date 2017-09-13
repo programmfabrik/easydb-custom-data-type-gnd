@@ -12,6 +12,9 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     $$("custom.data.type.gnd.name")
 
 
+  renderRowAsBlock: (data, top_level_data, opts) ->
+    false
+
   #######################################################################
   # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
