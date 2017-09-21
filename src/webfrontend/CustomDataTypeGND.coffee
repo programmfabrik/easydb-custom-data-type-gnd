@@ -374,9 +374,9 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
     switch @getDataStatus(cdata)
       when "empty"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
       when "invalid"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
 
     # if status is ok
     conceptURI = CUI.parseLocation(cdata.conceptURI).url
@@ -386,7 +386,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked Entry and Url to the Source
-    new ButtonHref
+    new CUI.ButtonHref
       appearance: "link"
       href: cdata.conceptURI
       target: "_blank"
