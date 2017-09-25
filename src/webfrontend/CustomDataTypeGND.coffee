@@ -202,7 +202,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                       # if type is ready for infopopup
                       if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
                         that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
-                        new Label(icon: "spinner", text: "lade Informationen")
+                        new CUI.Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
 
           # set new items to menu
@@ -355,7 +355,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
         label: "Verknüpfte URI"
       type: FormButton
       name: "conceptURI"
-      icon: new Icon(class: "fa-lightbulb-o")
+      icon: new CUI.Icon(class: "fa-lightbulb-o")
       text: cdata.conceptURI
       onClick: (evt,button) =>
         window.open cdata.conceptURI, "_blank"
