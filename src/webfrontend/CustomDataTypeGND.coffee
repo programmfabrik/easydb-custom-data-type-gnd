@@ -202,7 +202,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                       # if type is ready for infopopup
                       if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
                         that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
-                        new Label(icon: "spinner", text: "lade Informationen")
+                        new CUI.Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
 
           # set new items to menu
@@ -355,7 +355,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
         label: "Verknüpfte URI"
       type: FormButton
       name: "conceptURI"
-      icon: new Icon(class: "fa-lightbulb-o")
+      icon: new CUI.Icon(class: "fa-lightbulb-o")
       text: cdata.conceptURI
       onClick: (evt,button) =>
         window.open cdata.conceptURI, "_blank"
@@ -374,9 +374,9 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
     switch @getDataStatus(cdata)
       when "empty"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.gnd.edit.no_gnd")).DOM
       when "invalid"
-        return new EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
+        return new CUI.EmptyLabel(text: $$("custom.data.type.gnd.edit.no_valid_gnd")).DOM
 
     # if status is ok
     conceptURI = CUI.parseLocation(cdata.conceptURI).url
@@ -386,7 +386,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
 
     # output Button with Name of picked Entry and Url to the Source
-    new ButtonHref
+    new CUI.ButtonHref
       appearance: "link"
       href: cdata.conceptURI
       target: "_blank"
