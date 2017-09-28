@@ -14,71 +14,85 @@ custom_types:
         type: object
         properties:
           conceptName:
-            type: string
+            type: text
             index: no
             fields:
               exact:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_exact_analyzer
               folded:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_folded_analyzer
+                analyzer: ez_text_folded_analyzer
               fulltext:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_fulltext_index_analyzer
+                analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_phrase_index_analyzer
+                analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: sort_de-DE
+                analyzer: sort_de-DE
               suggest:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_suggest_analyzer
+                analyzer: ez_text_suggest_analyzer
               token:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
           conceptURI:
-            type: string
+            type: text
             index: no
             fields:
               exact:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_exact_analyzer
               folded:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_folded_analyzer
+                analyzer: ez_text_folded_analyzer
               fulltext:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_fulltext_index_analyzer
+                analyzer: ez_text_fulltext_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               phrase:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_phrase_index_analyzer
+                analyzer: ez_text_phrase_index_analyzer
                 search_analyzer: ez_text_fulltext_search_analyzer
               sort:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: sort_de-DE
+                analyzer: sort_de-DE
               suggest:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
-                index_analyzer: ez_text_suggest_analyzer
+                analyzer: ez_text_suggest_analyzer
               token:
-                type: string
+                type: text
+                fielddata: true
                 term_vector: with_positions_offsets
                 analyzer: ez_text_token_analyzer
     config:
