@@ -300,7 +300,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           )
         ]
     [{
-      type: Select
+      type: CUI.Select
       undo_and_changed_support: false
       form:
           label: $$('custom.data.type.gnd.modal.form.text.type')
@@ -309,7 +309,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       class: 'commonPlugin_Select'
     }
     {
-      type: Select
+      type: CUI.Select
       undo_and_changed_support: false
       class: 'commonPlugin_Select'
       form:
@@ -335,7 +335,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       name: 'countOfSuggestions'
     }
     {
-      type: Input
+      type: CUI.Input
       undo_and_changed_support: false
       form:
           label: $$("custom.data.type.gnd.modal.form.text.searchbar")
@@ -346,14 +346,14 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     {
       form:
         label: "Gewählter Eintrag"
-      type: Output
+      type: CUI.Output
       name: "conceptName"
       data: {conceptName: cdata.conceptName}
     }
     {
       form:
         label: "Verknüpfte URI"
-      type: FormButton
+      type: CUI.FormButton
       name: "conceptURI"
       icon: new CUI.Icon(class: "fa-lightbulb-o")
       text: cdata.conceptURI
