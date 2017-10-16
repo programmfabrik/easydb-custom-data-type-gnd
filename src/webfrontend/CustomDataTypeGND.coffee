@@ -113,7 +113,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
 
       htmlContent += "</table>"
-      tooltip.DOM.html(htmlContent);
+      tooltip.DOM.innerHTML = htmlContent
       tooltip.autoSize()
     )
     .fail (data, status, statusText) ->
