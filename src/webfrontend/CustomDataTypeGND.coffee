@@ -117,7 +117,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       tooltip.autoSize()
     )
     .fail (data, status, statusText) ->
-        console.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
+        #console.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
 
     return
 
@@ -168,7 +168,6 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       searchsuggest_xhr.xhr = new (CUI.XHR)(url: location.protocol + '//ws.gbv.de/suggest/gnd/?searchterm=' + gnd_searchterm + '&type=' + gnd_searchtype + subclassQuery + '&count=' + gnd_countSuggestions)
       searchsuggest_xhr.xhr.start().done((data, status, statusText) ->
 
-          console.debug 'OK', searchsuggest_xhr.xhr.getXHR(), searchsuggest_xhr.xhr.getResponseHeaders()
           # init xhr for tooltipcontent
           extendedInfo_xhr = { "xhr" : undefined }
           # create new menu with suggestions
