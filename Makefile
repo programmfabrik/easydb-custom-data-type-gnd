@@ -15,8 +15,7 @@ INSTALL_FILES = \
 	CustomDataTypeGND.config.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
-	src/webfrontend/CustomDataTypeGND.coffee \
-	src/webfrontend/GNDColumnCSVImporterDestinationField.coffee
+	src/webfrontend/CustomDataTypeGND.coffee
 
 all: build
 

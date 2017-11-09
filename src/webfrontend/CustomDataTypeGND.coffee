@@ -431,11 +431,4 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
     tags
 
-  getCSVDestinationFields: (csvImporter) ->
-    opts =
-      csvImporter: csvImporter
-      field: @
-
-    [ new GNDColumnCSVImporterDestinationField(opts) ]
-
 CustomDataType.register(CustomDataTypeGND)
