@@ -116,8 +116,6 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       tooltip.DOM.innerHTML = htmlContent
       tooltip.autoSize()
     )
-    .fail (data, status, statusText) ->
-        #console.debug 'FAIL', extendedInfo_xhr.getXHR(), extendedInfo_xhr.getResponseHeaders()
 
     return
 
@@ -247,35 +245,35 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     if @getCustomSchemaSettings().add_differentiatedpersons?.value
         option = (
             value: 'DifferentiatedPerson'
-            text: 'Individualisierte Personen'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_differentiatedpersons.value.checkbox')
           )
         dropDownSearchOptions.push option
     # offer CorporateBody?
     if @getCustomSchemaSettings().add_coorporates?.value
         option = (
             value: 'CorporateBody'
-            text: 'Körperschaften'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_coorporates.value.checkbox')
           )
         dropDownSearchOptions.push option
     # offer PlaceOrGeographicName?
     if @getCustomSchemaSettings().add_geographicplaces?.value
         option = (
             value: 'PlaceOrGeographicName'
-            text: 'Orte und Geographische Namen'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_geographicplaces.value.checkbox')
           )
         dropDownSearchOptions.push option
     # offer add_subjects?
     if @getCustomSchemaSettings().add_subjects?.value
         option = (
             value: 'SubjectHeading'
-            text: 'Schlagwörter'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_subjects.value.checkbox')
           )
         dropDownSearchOptions.push option
     # add "Alle"-Option? If count of options > 1!
     if dropDownSearchOptions.length > 1
         option = (
             value: 'all_supported_types'
-            text: 'Alle'
+            text: $$('custom.data.type.gnd.config.option.schema.exact_types.value.all')
           )
         dropDownSearchOptions.unshift option
     # if empty options -> offer all
@@ -316,19 +314,19 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       options: [
         (
             value: 10
-            text: '10 Vorschläge'
+            text: '10 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
         )
         (
             value: 20
-            text: '20 Vorschläge'
+            text: '20 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
         )
         (
             value: 50
-            text: '50 Vorschläge'
+            text: '50 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
         )
         (
             value: 100
-            text: '100 Vorschläge'
+            text: '100 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
         )
       ]
       name: 'countOfSuggestions'
@@ -344,14 +342,14 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     }
     {
       form:
-        label: "Gewählter Eintrag"
+        label: $$('custom.data.type.gnd.modal.form.text.result.label')
       type: CUI.Output
       name: "conceptName"
       data: {conceptName: cdata.conceptName}
     }
     {
       form:
-        label: "Verknüpfte URI"
+        label: $$('custom.data.type.gnd.modal.form.text.uri.label')
       type: CUI.FormButton
       name: "conceptURI"
       icon: new CUI.Icon(class: "fa-lightbulb-o")
@@ -430,5 +428,6 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       tags.push "✘ Exakter Typ"
 
     tags
+
 
 CustomDataType.register(CustomDataTypeGND)
