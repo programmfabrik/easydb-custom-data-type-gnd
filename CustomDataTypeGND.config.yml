@@ -1,5 +1,5 @@
 plugin:
-  name: easydb-custom-data-type-gnd
+  name: custom-data-type-gnd
   version: 1.0
   server:
     api-version:
