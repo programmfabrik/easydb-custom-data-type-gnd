@@ -1,6 +1,13 @@
 plugin:
   name: custom-data-type-gnd
   version: 1.0
+  url: https://github.com/programmfabrik/easydb-custom-data-type-gnd
+  displayname:
+    de-DE: GND-Verknüpfung
+    en-US: GND-Referencing
+  info:
+    de-DE: Stellt Verknüpfungen mit der Gemeinsamen Normdatei (GND) her.
+    en-US: Use for references to entities of the Integrated Authority File (GND)
   server:
     api-version:
       require: 1
