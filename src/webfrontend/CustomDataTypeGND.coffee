@@ -11,6 +11,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.gnd.name")
 
+  renderFieldAsGroup: ->
+    return false
 
   renderRowAsBlock: (data, top_level_data, opts) ->
     false
