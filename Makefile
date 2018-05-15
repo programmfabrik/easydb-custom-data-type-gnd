@@ -11,6 +11,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/en-US.json \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
+	$(WEB)/custom-data-type-gnd.scss \
 	$(JS) \
 	CustomDataTypeGND.config.yml
 
@@ -19,9 +20,11 @@ COFFEE_FILES = easydb-library/src/commons.coffee \
 
 all: build
 
+SCSS_FILES = src/webfrontend/scss/main.scss
+
 include easydb-library/tools/base-plugins.make
 
-build: code $(L10N)
+build: code $(L10N) $(SCSS)
 
 code: $(JS)
 
