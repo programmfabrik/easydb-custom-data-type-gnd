@@ -18,7 +18,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     false
 
   #######################################################################
-  # if type is DifferentiatedPerson or CorporateBody, get short info about entry from entityfacts
+  # if type is DifferentiatedPerson, PlaceOrGeographicName or CorporateBody, get short info about entry from entityfacts
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
     # extract gndID from uri
     gndID = uri
@@ -37,7 +37,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
       htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
       ##########################
-      # DifferentiatedPerson and CorporateBody
+      # DifferentiatedPerson, PlaceOrGeographicName and CorporateBody
 
       # Vollständiger Name (DifferentiatedPerson + CorporateBody)
       htmlContent += "<tr><td>Name:</td><td>" + data.preferredName + "</td></tr>"
@@ -199,7 +199,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                     # if enabled in mask-config
                     if that.getCustomMaskSettings().show_infopopup?.value
                       # if type is ready for infopopup
-                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody"
+                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody" or aktType.indexOf "PlaceOrGeographicName" != -1
                         that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
                         new CUI.Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
