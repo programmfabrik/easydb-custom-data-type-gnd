@@ -11,18 +11,17 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
   getCustomDataTypeNameLocalized: ->
     $$("custom.data.type.gnd.name")
 
-  renderFieldAsGroup: ->
-    return false
-
-  renderRowAsBlock: (data, top_level_data, opts) ->
-    false
 
   #######################################################################
   # if type is DifferentiatedPerson, PlaceOrGeographicName or CorporateBody, get short info about entry from entityfacts
   __getAdditionalTooltipInfo: (uri, tooltip, extendedInfo_xhr) ->
     # extract gndID from uri
     gndID = uri
-    gndID = gndID.split "/"
+    gndIDTest = gndID.split "/"
+    if gndIDTest.length == 1
+      gndID = gndID.split "%2F"
+    else
+      gndID = gndIDTest
     gndID = gndID.pop()
     # download infos
     if extendedInfo_xhr.xhr != undefined
@@ -33,108 +32,118 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
     extendedInfo_xhr = new (CUI.XHR)(url: xurl)
     extendedInfo_xhr.start()
     .done((data, status, statusText) ->
-      htmlContent = ''
-      htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
-      htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
-      ##########################
-      # DifferentiatedPerson, PlaceOrGeographicName and CorporateBody
+        if !data.preferredName
+          tooltip.hide()
+        else
+          htmlContent = ''
+          htmlContent += '<table style="border-spacing: 10px; border-collapse: separate;">'
+          htmlContent += '<tr><td colspan="2"><h4>Informationen über den Eintrag</h4></td></tr>'
+          ##########################
+          # DifferentiatedPerson, PlaceOrGeographicName and CorporateBody
 
-      # Vollständiger Name (DifferentiatedPerson + CorporateBody)
-      htmlContent += "<tr><td>Name:</td><td>" + data.preferredName + "</td></tr>"
-      # Abbildung (DifferentiatedPerson + CorporateBody)
-      depiction = data.depiction
-      if depiction
-        if depiction.thumbnail
-          htmlContent += '<tr><td>Abbildung:</td><td><img src="' + depiction.thumbnail['@id'] + '" style="border: 0; max.width:120px; max-height:150px;" /></td></tr>'
-      # Lebensdaten (DifferentiatedPerson)
-      dateOfBirth = data.dateOfBirth
-      dateOfDeath = data.dateOfDeath
-      if dateOfBirth or dateOfDeath
-        htmlContent += "<tr><td>Lebensdaten:</td><td>"
-        if dateOfBirth and dateOfDeath
-          htmlContent += dateOfBirth + " bis " + dateOfDeath
-        else if dateOfBirth and !dateOfDeath
-          htmlContent += dateOfBirth + " bis unbekannt"
-        else if !dateOfBirth and dateOfDeath
-          htmlContent += "unbekannt bis " + dateOfDeath
-        htmlContent += "</td></tr>"
-      # Date of Establishment (CorporateBody)
-      dateOfEstablishment = data.dateOfEstablishment
-      if dateOfEstablishment
-        htmlContent += "<tr><td>Gründung:</td><td>" + dateOfEstablishment[0] + "</td></tr>"
-      # Place of Business (CorporateBody)
-      placeOfBusiness = data.placeOfBusiness
-      places = []
-      if placeOfBusiness
-        if placeOfBusiness.length > 0
-          for place in placeOfBusiness
-            places.push(place.preferredName)
-          htmlContent += "<tr><td>Niederlassung(en):</td><td>" + places.join("<br />") + "</td></tr>"
-      # Übergeordnete Körperschaft (CorporateBody)
-      hierarchicallySuperiorOrganisation = data.hierarchicallySuperiorOrganisation
-      organisations = []
-      if hierarchicallySuperiorOrganisation
-        if hierarchicallySuperiorOrganisation.length > 0
-          for organisation in hierarchicallySuperiorOrganisation
-            organisations.push(organisation.preferredName)
-          htmlContent += "<tr><td>Übergeordnete Körperschaft(en):</td><td>" + organisations.join("<br />") + "</td></tr>"
-      # Geburtsort (DifferentiatedPerson)
-      placeOfBirth = data.placeOfBirth
-      if placeOfBirth
-        htmlContent += "<tr><td>Geburtsort:</td><td>" + placeOfBirth[0].preferredName + "</td></tr>"
-      # Sterbeort (DifferentiatedPerson)
-      placeOfDeath = data.placeOfDeath
-      if placeOfDeath
-        htmlContent += "<tr><td>Sterbeort:</td><td>" + placeOfDeath[0].preferredName + "</td></tr>"
-      # Berufe (DifferentiatedPerson)
-      professionOrOccupation = data.professionOrOccupation
-      professions = []
-      if professionOrOccupation
-        if professionOrOccupation.length > 0
-          for profession in professionOrOccupation
-            professions.push(profession.preferredName)
-          htmlContent += "<tr><td>Beruf(e):</td><td>" + professions.join("<br />") + "</td></tr>"
-      # Biographie (DifferentiatedPerson)
-      biographicalOrHistoricalInformation = data.biographicalOrHistoricalInformation
-      if biographicalOrHistoricalInformation
-        htmlContent += "<tr><td>Biographie:</td><td>" + biographicalOrHistoricalInformation + "</td></tr>"
-      # Thema (CorporateBody)
-      topic = data.topic
-      topics = []
-      if topic
-        if topic.length > 0
-          for t in topic
-            topics.push(t.preferredName)
-          htmlContent += "<tr><td>Themen:</td><td>" + topics.join("<br />") + "</td></tr>"
+          # Vollständiger Name (DifferentiatedPerson + CorporateBody)
+          htmlContent += "<tr><td>Name:</td><td>" + data.preferredName + "</td></tr>"
+          # Abbildung (DifferentiatedPerson + CorporateBody)
+          depiction = data.depiction
+          if depiction
+            if depiction.thumbnail
+              htmlContent += '<tr><td>Abbildung:</td><td><img src="' + depiction.thumbnail['@id'] + '" style="border: 0; max.width:120px; max-height:150px;" /></td></tr>'
+          # Lebensdaten (DifferentiatedPerson)
+          dateOfBirth = data.dateOfBirth
+          dateOfDeath = data.dateOfDeath
+          if dateOfBirth or dateOfDeath
+            htmlContent += "<tr><td>Lebensdaten:</td><td>"
+            if dateOfBirth and dateOfDeath
+              htmlContent += dateOfBirth + " bis " + dateOfDeath
+            else if dateOfBirth and !dateOfDeath
+              htmlContent += dateOfBirth + " bis unbekannt"
+            else if !dateOfBirth and dateOfDeath
+              htmlContent += "unbekannt bis " + dateOfDeath
+            htmlContent += "</td></tr>"
+          # Date of Establishment (CorporateBody)
+          dateOfEstablishment = data.dateOfEstablishment
+          if dateOfEstablishment
+            htmlContent += "<tr><td>Gründung:</td><td>" + dateOfEstablishment[0] + "</td></tr>"
+          # Place of Business (CorporateBody)
+          placeOfBusiness = data.placeOfBusiness
+          places = []
+          if placeOfBusiness
+            if placeOfBusiness.length > 0
+              for place in placeOfBusiness
+                places.push(place.preferredName)
+              htmlContent += "<tr><td>Niederlassung(en):</td><td>" + places.join("<br />") + "</td></tr>"
+          # Übergeordnete Körperschaft (CorporateBody)
+          hierarchicallySuperiorOrganisation = data.hierarchicallySuperiorOrganisation
+          organisations = []
+          if hierarchicallySuperiorOrganisation
+            if hierarchicallySuperiorOrganisation.length > 0
+              for organisation in hierarchicallySuperiorOrganisation
+                organisations.push(organisation.preferredName)
+              htmlContent += "<tr><td>Übergeordnete Körperschaft(en):</td><td>" + organisations.join("<br />") + "</td></tr>"
+          # Geburtsort (DifferentiatedPerson)
+          placeOfBirth = data.placeOfBirth
+          if placeOfBirth
+            htmlContent += "<tr><td>Geburtsort:</td><td>" + placeOfBirth[0].preferredName + "</td></tr>"
+          # Sterbeort (DifferentiatedPerson)
+          placeOfDeath = data.placeOfDeath
+          if placeOfDeath
+            htmlContent += "<tr><td>Sterbeort:</td><td>" + placeOfDeath[0].preferredName + "</td></tr>"
+          # Berufe (DifferentiatedPerson)
+          professionOrOccupation = data.professionOrOccupation
+          professions = []
+          if professionOrOccupation
+            if professionOrOccupation.length > 0
+              for profession in professionOrOccupation
+                professions.push(profession.preferredName)
+              htmlContent += "<tr><td>Beruf(e):</td><td>" + professions.join("<br />") + "</td></tr>"
+          # Biographie (DifferentiatedPerson)
+          biographicalOrHistoricalInformation = data.biographicalOrHistoricalInformation
+          if biographicalOrHistoricalInformation
+            htmlContent += "<tr><td>Biographie:</td><td>" + biographicalOrHistoricalInformation + "</td></tr>"
+          # Thema (CorporateBody)
+          topic = data.topic
+          topics = []
+          if topic
+            if topic.length > 0
+              for t in topic
+                topics.push(t.preferredName)
+              htmlContent += "<tr><td>Themen:</td><td>" + topics.join("<br />") + "</td></tr>"
 
-      # Synonyme (DifferentiatedPerson + CorporateBody)
-      variantName = data.variantName
-      if variantName
-        if variantName.length > 0
-          variantNames = variantName.join("<br />")
-          htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
+          # Synonyme (DifferentiatedPerson + CorporateBody)
+          variantName = data.variantName
+          if variantName
+            if variantName.length > 0
+              variantNames = variantName.join("<br />")
+              htmlContent += "<tr><td>Synonyme:</td><td>" + variantNames + "</td></tr>"
 
-      htmlContent += "</table>"
-      tooltip.DOM.innerHTML = htmlContent
-      tooltip.autoSize()
+          htmlContent += "</table>"
+          tooltip.DOM.innerHTML = htmlContent
+          tooltip.autoSize()
     )
+    .fail (data, status, statusText) ->
+        tooltip.hide()
 
     return
 
 
   #######################################################################
   # handle suggestions-menu
-  __updateSuggestionsMenu: (cdata, cdata_form, suggest_Menu, searchsuggest_xhr) ->
+  __updateSuggestionsMenu: (cdata, cdata_form, searchstring, input, suggest_Menu, searchsuggest_xhr, layout) ->
     that = @
 
     delayMillisseconds = 200
 
     setTimeout ( ->
-      gnd_searchterm = cdata_form.getFieldsByName("searchbarInput")[0].getValue()
+      gnd_searchterm = searchstring
 
-      gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+      gnd_searchtype = false
+      gnd_countSuggestions = 50
+      if (cdata_form)
+        gnd_searchtype = cdata_form.getFieldsByName("gndSelectType")[0].getValue()
+        gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
+
       # if "search-all-types", search all allowed types
-      if gnd_searchtype == 'all_supported_types'
+      if gnd_searchtype == 'all_supported_types' || ! gnd_searchtype
         gnd_searchtype = []
         if that.getCustomSchemaSettings().add_differentiatedpersons?.value
           gnd_searchtype.push 'DifferentiatedPerson'
@@ -153,8 +162,6 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       if subclass != undefined
         if subclass != 'ALLE'
           subclassQuery = '&exact_type=' + subclass
-
-      gnd_countSuggestions = cdata_form.getFieldsByName("countOfSuggestions")[0].getValue()
 
       if gnd_searchterm.length == 0
           return
@@ -199,7 +206,9 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                     # if enabled in mask-config
                     if that.getCustomMaskSettings().show_infopopup?.value
                       # if type is ready for infopopup
-                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody" or aktType.indexOf "PlaceOrGeographicName" != -1
+                      aktType = aktType.split(' / ')
+                      aktType = aktType[0]
+                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody" or aktType == "PlaceOrGeographicName"
                         that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
                         new CUI.Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
@@ -210,17 +219,15 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
               # lock in save data
               cdata.conceptURI = btn.getOpt("value")
               cdata.conceptName = btn.getText()
-              # lock in form
-              cdata_form.getFieldsByName("conceptName")[0].storeValue(cdata.conceptName).displayValue()
-              # nach eadb5-Update durch "setText" ersetzen und "__checkbox" rausnehmen
-              cdata_form.getFieldsByName("conceptURI")[0].__checkbox.setText(cdata.conceptURI)
-              cdata_form.getFieldsByName("conceptURI")[0].show()
-
-              # clear searchbar
-              cdata_form.getFieldsByName("searchbarInput")[0].setValue('')
+              # update the layout in form
+              that.__updateResult(cdata, layout)
               # hide suggest-menu
               suggest_Menu.hide()
+              # close popover
+              if that.popover
+                that.popover.hide()
               @
+
             items: menu_items
 
           # if no hits set "empty" message to menu
@@ -384,25 +391,33 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
     tt_text = $$("custom.data.type.gnd.url.tooltip", name: cdata.conceptName)
 
-    # output Button with Name of picked Entry and Url to the Source
-    new CUI.ButtonHref
-      appearance: "link"
-      href: cdata.conceptURI
-      target: "_blank"
-      tooltip:
-        markdown: true
-        text: tt_text
-      text: cdata.conceptName
+    # output Button with Name of picked dante-Entry and URI
+    encodedURI = encodeURIComponent(cdata.conceptURI)
+    new CUI.HorizontalLayout
+      maximize: true
+      left:
+        content:
+          new CUI.Label
+            centered: true
+            text: cdata.conceptName
+      center:
+        content:
+          # output Button with Name of picked Entry and Url to the Source
+          new CUI.ButtonHref
+            appearance: "link"
+            href: cdata.conceptURI
+            target: "_blank"
+            tooltip:
+              markdown: true
+              text: tt_text
+      right: null
     .DOM
-
 
 
   #######################################################################
   # zeige die gewählten Optionen im Datenmodell unter dem Button an
   getCustomDataOptionsInDatamodelInfo: (custom_settings) ->
     tags = []
-
-    console.log custom_settings
 
     if custom_settings.add_differentiatedpersons?.value
       tags.push "✓ Personen"

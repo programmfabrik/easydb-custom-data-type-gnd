@@ -4,3 +4,24 @@
     padding-left: $padding/2;
   }
 }
+
+.cui-input.pluginDirectSelectEditInput input {
+     border-radius: 4px 0px 0px 4px;
+}
+ .cui-button.pluginDirectSelectEditSearch {
+    margin-left: -1px;
+    background-color: white;
+}
+ .cui-button.pluginDirectSelectEditSearch .cui-button-visual {
+     border-radius: 0px 4px 4px 0px;
+}
+ .commonPlugin_Popover {
+     min-width:600px !important;
+     min-height: 200px !important;
+}
+ .commonPlugin_Input {
+     max-width: 100%;
+}
+ .commonPlugin_Input .cui-input {
+     max-width: 50%;
+}
