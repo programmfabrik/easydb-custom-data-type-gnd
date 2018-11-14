@@ -11,12 +11,10 @@ plugin:
   server:
     api-version:
       require: 1
-  scss:
-      body:
-        - build/webfrontend/custom-data-type-gnd.scss
   webfrontend:
     url: custom-data-type-gnd.js
     l10n: l10n/
+    css: custom-data-type-gnd.css
 custom_types:
   gnd:
     mapping:
