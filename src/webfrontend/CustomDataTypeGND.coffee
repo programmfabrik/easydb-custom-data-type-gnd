@@ -1,8 +1,3 @@
-#######################################################################
-# loadCSS
-ez5.session_ready =>
-    ez5.pluginManager.getPlugin("custom-data-type-gnd").loadCss()
-
 class CustomDataTypeGND extends CustomDataTypeWithCommons
 
   #######################################################################
