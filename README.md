@@ -17,6 +17,16 @@ As defined in `CustomDataTypeGND.config.yml` this datatype can be configured:
 
 * whether additional informationen is loaded if the mouse hovers a suggestion in the search result
 
+## saved data
+* conceptName
+    * Preferred label of the linked record
+* conceptURI
+    * URI to linked record
+* _fulltext
+    * easydb-fulltext
+* _standard
+    * easydb-standard
+
 ## sources
 
 The source code of this plugin is managed in a git repository at <https://github.com/programmfabrik/easydb-custom-data-type-gnd>. Please use [the issue tracker](https://github.com/programmfabrik/easydb-custom-data-type-gnd/issues) for bug reports and feature requests!
