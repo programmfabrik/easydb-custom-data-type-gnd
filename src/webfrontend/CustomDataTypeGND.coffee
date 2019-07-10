@@ -337,6 +337,10 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
             value: 100
             text: '100 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
         )
+        (
+            value: 250
+            text: '250 ' + $$('custom.data.type.gnd.modal.form.text.count_short')
+        )
       ]
       name: 'countOfSuggestions'
     }
