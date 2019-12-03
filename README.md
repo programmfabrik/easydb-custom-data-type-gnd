@@ -1,3 +1,9 @@
+> This Plugin / Repo is being maintained by a community of developers.
+There is no warranty given or bug fixing guarantee; especially not by
+Programmfabrik GmbH. Please use the github issue tracking to report bugs
+and self organize bug fixing. Feel free to directly contact the committing
+developers.
+
 # easydb-custom-data-type-gnd
 
 This is a plugin for [easyDB 5](http://5.easydb.de/) with Custom Data Type `CustomDataTypeGND` for references to entities (only Differentiated Persons, Cooperates, Subject Headings, Place or geographic name) of the [Integrated Authority File (GND)](https://en.wikipedia.org/wiki/Integrated_Authority_File).
