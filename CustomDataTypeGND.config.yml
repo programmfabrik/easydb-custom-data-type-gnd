@@ -1,6 +1,6 @@
 plugin:
   name: custom-data-type-gnd
-  version: 1.0
+  version: 1.5
   url: https://github.com/programmfabrik/easydb-custom-data-type-gnd
   displayname:
     de-DE: GND-Verknüpfung
@@ -17,6 +17,11 @@ plugin:
     css: custom-data-type-gnd.css
 custom_types:
   gnd:
+    update:
+      script: build/scripts/gnd-update.js
+      timeout: 60
+      batch_size: 100
+      interval_base_config: update_interval_gnd.days
     mapping:
       conceptName:
         type: text
@@ -40,6 +45,10 @@ custom_types:
           parameters:
             value:
               type: bool
+        - name: add_works
+          parameters:
+            value:
+              type: bool
         - name: exact_types
           parameters:
             value:
@@ -50,3 +59,12 @@ custom_types:
           parameters:
             value:
               type: bool
+base_config:
+  - name: update_interval_gnd
+    group: update_custom_data_type
+    parameters:
+      days:
+        type: int
+        min: 0
+        default: 0
+        position: 0

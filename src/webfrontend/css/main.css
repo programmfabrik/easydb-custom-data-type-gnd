@@ -1,8 +1,6 @@
-.ez5-custom-data-type-gnd {
-  .cui-horizontal-layout-center {
+.ez5-custom-data-type-gnd .cui-horizontal-layout-center {
     justify-content: center;
     padding-left: 0px;
-  }
 }
 
 .cui-input.pluginDirectSelectEditInput input {

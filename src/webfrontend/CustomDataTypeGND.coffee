@@ -153,6 +153,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           gnd_searchtype.push 'PlaceOrGeographicName'
         if that.getCustomSchemaSettings().add_subjects?.value
           gnd_searchtype.push 'SubjectHeading'
+        if that.getCustomSchemaSettings().add_works?.value
+          gnd_searchtype.push 'Work'
         gnd_searchtype = gnd_searchtype.join(',')
 
       # if only a "subclass" is active
@@ -278,6 +280,13 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
             text: $$('custom.data.type.gnd.config.parameter.schema.add_subjects.value.checkbox')
           )
         dropDownSearchOptions.push option
+    # offer add_works?
+    if @getCustomSchemaSettings().add_works?.value
+        option = (
+            value: 'Work'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_works.value.checkbox')
+          )
+        dropDownSearchOptions.push option
     # add "Alle"-Option? If count of options > 1!
     if dropDownSearchOptions.length > 1
         option = (
@@ -303,6 +312,10 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           (
             value: 'SubjectHeading'
             text: 'Schlagwörter'
+          )
+          (
+            value: 'Work'
+            text: 'Werke'
           )
         ]
     [{
@@ -402,7 +415,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       left:
         content:
           new CUI.Label
-            centered: true
+            centered: false
             text: cdata.conceptName
       center:
         content:
@@ -442,6 +455,11 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       tags.push "✓ Schlagwörter"
     else
       tags.push "✘ Schlagwörter"
+
+    if custom_settings.add_works?.value
+      tags.push "✓ Werke"
+    else
+      tags.push "✘ Werke"
 
     if custom_settings.exact_types?.value
       tags.push "✓ Exakter Typ: " + custom_settings.exact_types?.value
