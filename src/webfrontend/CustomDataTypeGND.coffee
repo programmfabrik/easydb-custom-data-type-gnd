@@ -217,18 +217,41 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
           # set new items to menu
           itemList =
+            keyboardControl: true
             onClick: (ev2, btn) ->
               # lock in save data
               cdata.conceptURI = btn.getOpt("value")
+              GNDURIParts = cdata.conceptURI.split '/'
+              GNDId = GNDURIParts.pop()
               cdata.conceptName = btn.getText()
-              # update the layout in form
-              that.__updateResult(cdata, layout, opts)
-              # hide suggest-menu
-              suggest_Menu.hide()
-              # close popover
-              if that.popover
-                that.popover.hide()
-              @
+
+              # get more informations from lobid.org
+              xurl = 'https://jsontojsonp.gbv.de/?url=' + CUI.encodeURIComponentNicely('https://lobid.org/gnd/' + GNDId)
+              extendedInfo_xhr = new (CUI.XHR)(url: xurl)
+              extendedInfo_xhr.start()
+              .done((data, status, statusText) ->
+                resultsGNDID = data['gndIdentifier']
+
+                cdata.conceptURI = data['id']
+
+                cdata._standard =
+                  text: cdata.conceptName
+
+                cdata._fulltext =
+                  string: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
+              )
+
+
+              .always(() ->
+                # update the layout in form
+                that.__updateResult(cdata, layout, opts)
+                # hide suggest-menu
+                suggest_Menu.hide()
+                # close popover
+                if that.popover
+                  that.popover.hide()
+                @
+              )
 
             items: menu_items
 

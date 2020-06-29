@@ -28,3 +28,7 @@
  .commonPlugin_Input .cui-input {
      max-width: 50%;
 }
+
+.customDataTypeCommonsMenu .cui-menu-item {
+  max-width: none !important;
+}
