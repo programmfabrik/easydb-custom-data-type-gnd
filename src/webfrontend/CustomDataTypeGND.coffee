@@ -239,6 +239,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
 
                 cdata._fulltext =
                   string: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
+                  text: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
               )
 
 

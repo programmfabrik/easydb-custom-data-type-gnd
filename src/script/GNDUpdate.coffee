@@ -74,6 +74,7 @@ class GNDUpdate
 
                 updatedGNDcdata._fulltext =
                   string: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
+                  text: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
 
                 if !objectsMap[resultsGNDID]
                   console.error "GND nicht in objectsMap: " + resultsGNDID
