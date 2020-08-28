@@ -238,10 +238,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                   text: cdata.conceptName
 
                 cdata._fulltext =
-                  string: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
                   text: ez5.GNDUtil.getFullTextFromEntityFactsJSON(data)
               )
-
 
               .always(() ->
                 # update the layout in form
