@@ -34,7 +34,7 @@ ${UPDATE_SCRIPT_BUILD_FILE}: $(subst .coffee,.coffee.js,${UPDATE_SCRIPT_COFFEE_F
 
 include easydb-library/tools/base-plugins.make
 
-build: code $(L10N) ${UPDATE_SCRIPT_BUILD_FILE}
+build: code $(L10N) ${UPDATE_SCRIPT_BUILD_FILE} buildinfojson
 
 code: $(JS)
 			mkdir -p build/webfrontend/css
