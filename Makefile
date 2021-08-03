@@ -12,7 +12,7 @@ INSTALL_FILES = \
 		build/scripts/gnd-update.js \
     $(JS) \
     $(CSS) \
-    CustomDataTypeGND.config.yml
+    manifest.yml
 
 COFFEE_FILES = easydb-library/src/commons.coffee \
     src/webfrontend/CustomDataTypeGND.coffee \
