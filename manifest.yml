@@ -49,6 +49,10 @@ custom_types:
           parameters:
             value:
               type: bool
+        - name: add_conferenceorevent
+          parameters:
+            value:
+              type: bool
         - name: exact_types
           parameters:
             value:

@@ -61,11 +61,13 @@ custom.data.type.gnd.config.parameter.schema.add_differentiatedpersons.value.lab
 custom.data.type.gnd.config.parameter.schema.add_geographicplaces.value.label,Durchsuche,Search,,
 custom.data.type.gnd.config.parameter.schema.add_subjects.value.label,Durchsuche,Search,,
 custom.data.type.gnd.config.parameter.schema.add_works.value.label,Durchsuche,Search,,
+custom.data.type.gnd.config.parameter.schema.add_conferenceorevent.value.label,Durchsuche,Search,,
 custom.data.type.gnd.config.parameter.schema.add_coorporates.value.checkbox,Körperschaften,Corporate bodies,,
 custom.data.type.gnd.config.parameter.schema.add_differentiatedpersons.value.checkbox,Individualisierte Personen,Differentiated persons,,
 custom.data.type.gnd.config.parameter.schema.add_geographicplaces.value.checkbox,Geografika,Places or geographic names,,
 custom.data.type.gnd.config.parameter.schema.add_subjects.value.checkbox,Sachbegriffe,Subjects,,
 custom.data.type.gnd.config.parameter.schema.add_works.value.checkbox,Werke,Works,,
+custom.data.type.gnd.config.parameter.schema.add_conferenceorevent.value.checkbox,Konferenzen und Veranstaltungen,Conference and events,,
 custom.data.type.gnd.url.tooltip,zu **%(name)s** bei der Deutschen Nationalbibliothek springen,jump to **%(name)s** at German National Library (DNB),,
 server.config.name.system.update_interval_gnd,GND-Update-Einstellungen,GND-Update-Settings
 server.config.parameter.system.update_interval_gnd.days.label,Tage zwischen Updates,Days between updates

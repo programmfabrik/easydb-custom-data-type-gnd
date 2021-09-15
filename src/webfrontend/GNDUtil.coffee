@@ -27,8 +27,8 @@ class ez5.GNDUtil
     # ++
     if efJSON?.gndSubjectCategory
       for entry in efJSON.gndSubjectCategory
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     _fulltext += efJSON['preferredName'] + ' '
@@ -71,14 +71,20 @@ class ez5.GNDUtil
     # ++
     if efJSON?.author
       for entry in efJSON.author
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.firstAuthor
       for entry in efJSON.firstAuthor
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
+
+    #
+    if efJSON?.organizerOrHost
+      for entry in efJSON.organizerOrHost
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.gender
@@ -86,28 +92,34 @@ class ez5.GNDUtil
         if entry.label
           _fulltext += entry.label + ' '
 
+    #
+    if efJSON?.placeOfEvent
+      for entry in efJSON.placeOfEvent
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
+
     # ++
     if efJSON?.placeOfBirth
       for entry in efJSON.placeOfBirth
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.placeOfDeath
       for entry in efJSON.placeOfDeath
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.placeOfBusiness
       for entry in efJSON.placeOfBusiness
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     if efJSON?.associatedPlace
       for entry in efJSON.associatedPlace
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.topic
@@ -117,72 +129,72 @@ class ez5.GNDUtil
 
     if efJSON?.predecessor
       for entry in efJSON.predecessor
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.precedingCorporateBody
       for entry in efJSON.precedingCorporateBody
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     if efJSON?.isA
       for entry in efJSON.isA
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.composer
       for entry in efJSON.composer
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.relatedWork
       for entry in efJSON.relatedWork
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.relatedPerson
       for entry in efJSON.relatedPerson
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.precedingPlaceOrGeographicName
       for entry in efJSON.precedingPlaceOrGeographicName
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.hierarchicalSuperiorOfTheCorporateBody
       for entry in efJSON.hierarchicalSuperiorOfTheCorporateBody
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.broaderTermInstantial
       for entry in efJSON.broaderTermInstantial
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.broaderTermGeneral
       for entry in efJSON.broaderTermGeneral
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     # ++
     if efJSON?.professionOrOccupation
       for entry in efJSON.professionOrOccupation
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     if efJSON?.architect
       for entry in efJSON.architect
-        if entry.label
-          _fulltext += entry.label + ' '
+        if entry.preferredName
+          _fulltext += entry.preferredName + ' '
 
     if efJSON?.opusNumericDesignationOfMusicalWork
       for entry in efJSON.opusNumericDesignationOfMusicalWork

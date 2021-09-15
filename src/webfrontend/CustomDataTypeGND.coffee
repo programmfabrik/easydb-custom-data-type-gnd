@@ -72,6 +72,14 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
               for place in placeOfBusiness
                 places.push(place.preferredName)
               htmlContent += "<tr><td>Niederlassung(en):</td><td>" + places.join("<br />") + "</td></tr>"
+          # Place of placeOfConferenceOrEvent (ConferenceOrEvent)
+          placeOfEvent = data.placeOfEvent
+          places = []
+          if placeOfEvent
+            if placeOfEvent.length > 0
+              for place in placeOfEvent
+                places.push(place.preferredName)
+              htmlContent += "<tr><td>Veranstaltungsort(e):</td><td>" + places.join("<br />") + "</td></tr>"
           # Übergeordnete Körperschaft (CorporateBody)
           hierarchicallySuperiorOrganisation = data.hierarchicallySuperiorOrganisation
           organisations = []
@@ -155,6 +163,8 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           gnd_searchtype.push 'SubjectHeading'
         if that.getCustomSchemaSettings().add_works?.value
           gnd_searchtype.push 'Work'
+        if that.getCustomSchemaSettings().add_conferenceorevent?.value
+          gnd_searchtype.push 'ConferenceOrEvent'
         gnd_searchtype = gnd_searchtype.join(',')
 
       # if only a "subclass" is active
@@ -210,7 +220,7 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
                       # if type is ready for infopopup
                       aktType = aktType.split(' / ')
                       aktType = aktType[0]
-                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody" or aktType == "PlaceOrGeographicName"
+                      if aktType == "DifferentiatedPerson" or aktType == "CorporateBody" or aktType == "PlaceOrGeographicName" or aktType == "ConferenceOrEvent"
                         that.__getAdditionalTooltipInfo(data[3][key], tooltip, extendedInfo_xhr)
                         new CUI.Label(icon: "spinner", text: "lade Informationen")
               menu_items.push item
@@ -309,6 +319,13 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
             text: $$('custom.data.type.gnd.config.parameter.schema.add_works.value.checkbox')
           )
         dropDownSearchOptions.push option
+    # offer add_works?
+    if @getCustomSchemaSettings().add_conferenceorevent?.value
+        option = (
+            value: 'ConferenceOrEvent'
+            text: $$('custom.data.type.gnd.config.parameter.schema.add_conferenceorevent.value.checkbox')
+          )
+        dropDownSearchOptions.push option
     # add "Alle"-Option? If count of options > 1!
     if dropDownSearchOptions.length > 1
         option = (
@@ -338,6 +355,10 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
           (
             value: 'Work'
             text: 'Werke'
+          )
+          (
+            value: 'ConferenceOrEvent'
+            text: 'Konferenzen und Veranstaltungen'
           )
         ]
     [{
@@ -482,6 +503,11 @@ class CustomDataTypeGND extends CustomDataTypeWithCommons
       tags.push "✓ Werke"
     else
       tags.push "✘ Werke"
+
+    if custom_settings.add_conferenceorevent?.value
+      tags.push "✓ Konferenzen und Veranstaltungen"
+    else
+      tags.push "✘ Konferenzen und Veranstaltungen"
 
     if custom_settings.exact_types?.value
       tags.push "✓ Exakter Typ: " + custom_settings.exact_types?.value
